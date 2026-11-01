@@ -7,5 +7,14 @@
 <h1>Tìm Kiếm</h1>
 <h4>Có @Model.Count() sản phẩm</h4>
 
-@await Html.PartialAsync("ProductItem", Model)
-
+@if (Model.Any())
+{
+    @await Html.PartialAsync("ProductItem", Model)
+}
+else
+{
+    <div class="text-center py-5">
+        <p class="mb-3">Không tìm thấy sản phẩm phù hợp. Hãy thử từ khóa khác.</p>
+        <a asp-controller="SanPham" asp-action="Index" class="btn btn-primary rounded-pill px-4">Xem tất cả sản phẩm</a>
+    </div>
+}

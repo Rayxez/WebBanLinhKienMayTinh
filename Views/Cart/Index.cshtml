@@ -6,36 +6,31 @@
     <div id="spinner" class="show w-100 vh-100 bg-white position-fixed translate-middle top-50 start-50  d-flex align-items-center justify-content-center">
         <div class="spinner-grow text-primary" role="status"></div>
     </div>
-    <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-fullscreen">
-            <div class="modal-content rounded-0">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Search by keyword</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body d-flex align-items-center">
-                    <div class="input-group w-75 mx-auto d-flex">
-                        <input type="search" class="form-control p-3" placeholder="keywords" aria-describedby="search-icon-1">
-                        <span id="search-icon-1" class="input-group-text p-3"><i class="fa fa-search"></i></span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
     <div class="container-fluid page-header py-5">
     <h1 class="text-center text-white display-6" style="font-family:'roboto' ,'sans-serif'">Giỏ Hàng</h1>
         <ol class="breadcrumb justify-content-center mb-0">
-            <li class="breadcrumb-item"><a href="#">Trang Chủ</a></li>
+            <li class="breadcrumb-item"><a asp-controller="TrangChu" asp-action="Index">Trang Chủ</a></li>
             <li class="breadcrumb-item active text-white">Giỏ Hàng</li>
         </ol>
     </div>
-    <div class="container-fluid py-5">
+    @if (!Model.Any())
+    {
+        <div class="container py-5 text-center">
+            <div class="mx-auto p-5 rounded-4 bg-white shadow-sm" style="max-width: 620px;">
+                <i class="fas fa-shopping-bag fa-3x text-primary mb-3" aria-hidden="true"></i>
+                <h2 class="h3">Giỏ hàng của bạn đang trống</h2>
+                <p class="text-muted mb-4">Khám phá sản phẩm và thêm món phù hợp với cấu hình của bạn.</p>
+                <a asp-controller="SanPham" asp-action="Index" class="btn btn-primary rounded-pill px-4 py-2">Xem sản phẩm</a>
+            </div>
+        </div>
+    }
+    <div class="container-fluid py-5 @(Model.Any() ? "" : "d-none")">
         <div class="container py-5">
             <div class="table-responsive">
                 <table class="table">
                     <thead>
                         <tr>
-                            <th scope="col">Sản Phẩm</th>
+                            <th scope="col">Ảnh</th>
                             <th scope="col">Tên Sản Phẩm</th>
                             <th scope="col">Giá Tiền</th>
                             <th scope="col">Số Lượng</th>
@@ -66,13 +61,13 @@
                             
                             <td>
                                 <div class="input-group quantity mt-4" style="width: 100px;">
-                                    <button class="btn btn-sm btn-minus rounded-circle bg-light border decrease-btn" data-id="@item.ProductId">
+                                    <button type="button" class="btn btn-sm btn-minus rounded-circle bg-light border decrease-btn" data-id="@item.ProductId" aria-label="Giảm số lượng @item.ProductName">
                                         <i class="fa fa-minus"></i>
                                     </button>
 
                                     <input type="text" id="qty-@item.ProductId" class="form-control form-control-sm text-center border-0" value="@item.Quantity" readonly>
 
-                                    <button class="btn btn-sm btn-plus rounded-circle bg-light border increase-btn" data-id="@item.ProductId">
+                                    <button type="button" class="btn btn-sm btn-plus rounded-circle bg-light border increase-btn" data-id="@item.ProductId" aria-label="Tăng số lượng @item.ProductName">
                                         <i class="fa fa-plus"></i>
                                     </button>
                                 </div>
@@ -86,19 +81,17 @@
                             </td>
                            
                           
-                                <td>
-                          
-                                <a href="#" class="btn btn-md rounded-circle bg-light border mt-4 remove-btn" data-id="@item.ProductId">
-                                    <i class="fa fa-times text-danger"></i>
-                                </a>
-                                </td>
-                            <td class="d-flex align-items-center gap-2 mt-4">
-               
-                                <a asp-action="BuyNow" asp-controller="Cart" asp-route-productId="@item.ProductId"
-                                   asp-route-quantity="@item.Quantity";
-                                    class="btn btn-sm btn-primary rounded-pill px-3 text-white">
-                                    Mua ngay
-                                </a>
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    <button type="button" class="btn btn-md rounded-circle bg-light border remove-btn" data-id="@item.ProductId" aria-label="Xóa @item.ProductName khỏi giỏ">
+                                        <i class="fa fa-times text-danger" aria-hidden="true"></i>
+                                    </button>
+                                    <a asp-action="BuyNow" asp-controller="Cart" asp-route-productId="@item.ProductId"
+                                       asp-route-quantity="@item.Quantity"
+                                       class="btn btn-sm btn-primary rounded-pill px-3 text-white">
+                                        Mua ngay
+                                    </a>
+                                </div>
                             </td>
 
                         </tr>
@@ -120,22 +113,20 @@
                             <div class="d-flex justify-content-between">
                                 <h5 class="mb-0 me-4">Phí giao hàng</h5>
                                 <div class="">
-                                    <p class="mb-0">Miễn phí vận chuyển</p>
+                                    <p class="mb-0">Xác nhận khi đặt hàng</p>
                                 </div>
                             </div>
-                            @* <p class="mb-0 text-end">Shipping to Ukraine.</p> *@
                         </div>
                         <div class="py-4 mb-4 border-top border-bottom d-flex justify-content-between">
                         <h5 class="mb-0 ps-4 me-4 cart-Subbtotal">Thanh toán</h5>
                         <p class="mb-0 pe-4">@string.Format("{0:N0}", @Model.Sum(pr => pr.Pay)) đ</p>
                         </div>
-                    <a asp-controller="Cart" asp-action="CheckOut" class="btn border-secondary rounded-pill px-4 py-3 text-primary text-uppercase mb-4 ms-4" type="button">Thanh Toán</a>
+                    <a asp-controller="Cart" asp-action="CheckOut" class="btn border-secondary rounded-pill px-4 py-3 text-primary text-uppercase mb-4 ms-4">Thanh Toán</a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <a href="#" class="btn btn-primary border-3 border-primary rounded-circle back-to-top"><i class="fa fa-arrow-up"></i></a>
 @section Scripts {
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     @Html.AntiForgeryToken()
@@ -313,112 +304,4 @@
             updateCartIconFromServer();
         });
     </script>
-}
-
-@* @section Scripts {
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        $(function () {
-            function parseNumber(txt) {
-                if (txt === null || txt === undefined) return 0;
-                var cleaned = String(txt).replace(/[^0-9\.\,]/g, '');
-                if (cleaned.indexOf(',') > -1 && cleaned.indexOf('.') > -1) {
-                    cleaned = cleaned.replace(/,/g, '');
-                } else if (cleaned.indexOf(',') > -1 && cleaned.indexOf('.') === -1) {
-                    cleaned = cleaned.replace(/,/g, '.');
-                }
-                var n = parseFloat(cleaned);
-                return isNaN(n) ? 0 : n;
-            }
-
-            function updateCartTotalUI(total) {
-                var formatted = (total || 0).toLocaleString();
-                $(".cart-Subtotal").text(formatted);
-                $("p.mb-0.pe-4").text(formatted);
-            }
-
-            function setIncreaseButtonState(id, qty, maxStock) {
-                var btn = $(".increase-btn[data-id='" + id + "']");
-                if (!btn.length) return;
-                if (maxStock && qty >= maxStock) {
-                    btn.prop("disabled", true).addClass("disabled");
-                } else {
-                    btn.prop("disabled", false).removeClass("disabled");
-                }
-            }
-
-            // Increase quantity
-            $(document).on("click", ".increase-btn", function (e) {
-                e.preventDefault();
-                var btn = $(this);
-                if (btn.prop("disabled")) return;
-                const id = btn.data("id");
-
-                $.post("/Cart/IncreaseQuantity", { id: id }, function (res) {
-                    if (res.success) {
-                        $("#qty-" + id).val(res.quantity);
-                        $(".cart-total-" + id).text(Number(res.lineTotal || 0).toLocaleString());
-                        updateCartTotalUI(res.total);
-                        setIncreaseButtonState(id, res.quantity, res.maxStock);
-                    } else {
-                        if (res.maxStock) {
-                            setIncreaseButtonState(id, res.quantity || 0, res.maxStock);
-                        }
-                        alert(res.message || "Không thể tăng thêm.");
-                    }
-                }).fail(function() {
-                    alert("Lỗi khi tăng số lượng. Vui lòng thử lại.");
-                });
-            });
-
-            // Decrease quantity
-            $(document).on("click", ".decrease-btn", function (e) {
-                e.preventDefault();
-                const id = $(this).data("id");
-                const row = $(this).closest("tr");
-
-                $.post("/Cart/DecreaseQuantity", { id: id }, function (res) {
-                    if (res.success) {
-                        if (res.quantity > 0) {
-                            $("#qty-" + id).val(res.quantity);
-                            $(".cart-total-" + id).text(Number(res.lineTotal || 0).toLocaleString());
-                            updateCartTotalUI(res.total);
-                            setIncreaseButtonState(id, res.quantity, res.maxStock);
-                        } else {
-                            row.fadeOut(300, function () {
-                                $(this).remove();
-                                updateCartTotalUI(res.total);
-                            });
-                        }
-                    } else {
-                        alert(res.message || "Cập nhật thất bại.");
-                    }
-                }).fail(function() {
-                    alert("Lỗi khi giảm số lượng. Vui lòng thử lại.");
-                });
-            });
-
-
-            $(document).on("click", ".remove-btn", function (e) {
-                e.preventDefault();
-                const id = $(this).data("id");
-                const row = $(this).closest("tr");
-
-                $.post("/Cart/RemoveCart", { productId: id }, function (res) {
-                    if (res.success) {
-                        row.fadeOut(300, function () {
-                            $(this).remove();
-                            updateCartTotalUI(res.total);
-                        });
-                    } else {
-                        alert(res.message || "Xóa sản phẩm thất bại!");
-                    }
-                }).fail(function() {
-                    alert("Lỗi khi xóa sản phẩm. Vui lòng thử lại.");
-                });
-            });
-
-        });
-    </script>
-} *@
 }

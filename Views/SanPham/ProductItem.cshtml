@@ -22,10 +22,16 @@
                 <p class="truncate-detail">@item.ProductDetail</p>
                 <div class="d-flex justify-content-between flex-lg-wrap">
                     <p class="text-dark fs-5 fw-bold mb-0">@String.Format("{0:N0} đ", item.Price)</p>
-
-                    <a asp-action="AddToCart" asp-controller ="Cart" asp-route-id ="@item.ProductId" class="btn border border-secondary rounded-pill px-3 text-primary">
-                        <i class="fa fa-shopping-bag me-2 text-primary" aria-hidden="true"></i> Thêm giỏ hàng
-                    </a>
+                    @if (item.StockQuantity > 0)
+                    {
+                        <a asp-action="AddToCart" asp-controller="Cart" asp-route-id="@item.ProductId" class="btn border border-secondary rounded-pill px-3 text-primary">
+                            <i class="fa fa-shopping-bag me-2 text-primary" aria-hidden="true"></i> Thêm giỏ hàng
+                        </a>
+                    }
+                    else
+                    {
+                        <button type="button" class="btn btn-secondary rounded-pill px-3" disabled>Hết hàng</button>
+                    }
                 </div>
             </div>
         </div>

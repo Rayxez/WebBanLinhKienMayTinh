@@ -10,5 +10,6 @@ namespace HTNLShop.ViewModels
         public string? CategoryName { get; set; }
         public int TotalQuantitySold { get; set; }
         public string? ImageUrl { get; set; }
+        public int StockQuantity { get; set; }
     }
 }

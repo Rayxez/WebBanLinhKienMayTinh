@@ -23,18 +23,9 @@
        @if (User.Identity.IsAuthenticated){
     <button type="submit" class="btn btn-primary">Gửi đánh giá</button>
        }
+       else
+       {
+           <p class="mb-0">Đăng nhập để đánh giá sản phẩm sau khi mua.</p>
+           <a asp-controller="Customer" asp-action="Login" asp-route-returnUrl="@Url.Action("Detail", "SanPham", new { id = Model.ProductId })" class="btn btn-outline-primary mt-2">Đăng nhập</a>
+       }
 </form>
-
-<script>
-    $("#reviewForm").submit(function (e) {
-        e.preventDefault();
-        $.ajax({
-            url: "/Review/_PostReview",
-            type: "POST",
-            data: $(this).serialize(),
-            success: function (result) {
-                $("#reviewList").html(result);
-            }
-        });
-    });
-</script>

@@ -9,12 +9,34 @@
 <div class="container-fluid page-header py-5">
     <h1 class="text-center text-white display-6">Chi tiết sản phẩm</h1>
     <ol class="breadcrumb justify-content-center mb-0">
-        <li class="breadcrumb-item"><a href="#">Trang Chủ</a></li>
-        <li class="breadcrumb-item"><a href="#">Sản Phẩm</a></li>
+        <li class="breadcrumb-item"><a asp-controller="TrangChu" asp-action="Index">Trang Chủ</a></li>
+        <li class="breadcrumb-item"><a asp-controller="SanPham" asp-action="Index">Sản Phẩm</a></li>
         <li class="breadcrumb-item active text-white">@Model.ProductName</li>
     </ol>
 </div>
 
+@section Scripts {
+    <script>
+        $(document).on("submit", "#reviewForm", function (event) {
+            event.preventDefault();
+            const form = $(this);
+
+            $.ajax({
+                url: form.attr("action"),
+                type: "POST",
+                data: form.serialize(),
+                success: function (result) {
+                    $("#reviewList").html(result);
+                    form.find("textarea[name='Content']").val("");
+                },
+                error: function (xhr) {
+                    const message = xhr.responseJSON?.message || "Không thể gửi đánh giá. Vui lòng thử lại.";
+                    alert(message);
+                }
+            });
+        });
+    </script>
+}
 <div class="container-fluid py-5 mt-5">
     <div class="container py-5">
         <div class="row g-4 mb-5">
@@ -22,10 +44,8 @@
                 <div class="row g-4">
                     <div class="col-lg-6">
                         <div class="border rounded">
-                            <a href="#">
-                                <img src="@(string.IsNullOrWhiteSpace(Model.ImageUrl) ? "/img/hero-img.jpg" : Model.ImageUrl)"
-                                     class="img-fluid rounded" alt="@Model.ProductName" width="600" height="400" />
-                            </a>
+                            <img src="@(string.IsNullOrWhiteSpace(Model.ImageUrl) ? "/img/hero-img.jpg" : Model.ImageUrl)"
+                                 class="img-fluid rounded" alt="@Model.ProductName" width="600" height="400" />
                         </div>
                     </div>
                     <div class="col-lg-6">
@@ -34,22 +54,31 @@
                         <h5 class="fw-bold mb-3">@string.Format("{0:N0}", @Model.Price) đ</h5>
                         <p class="mb-4">@Model.ProductDetail</p>
                  
-                        <form asp-action="AddToCart" asp-controller="Cart" asp-route-id="@Model.ProductId">
-                        <div class="input-group quantity mb-5" style="width: 100px;">
+                        @if (Model.StockQuantity > 0)
+                        {
+                        <form asp-action="AddToCart" asp-controller="Cart" asp-route-id="@Model.ProductId" method="get">
+                        <div class="input-group quantity mb-4" style="width: 120px;">
                             <div class="input-group-btn">
-                                <button class="btn btn-sm btn-minus rounded-circle bg-light border" type="button">
-                                    <i class="fa fa-minus"></i>
+                                <button class="btn btn-sm btn-minus rounded-circle bg-light border" type="button" aria-label="Giảm số lượng">
+                                    <i class="fa fa-minus" aria-hidden="true"></i>
                                 </button>
                             </div>
-                            <input type="text" class="form-control form-control-sm text-center border-0" value="1" name="quantity">
+                            <input type="number" class="form-control form-control-sm text-center border-0" value="1" min="1" max="@Model.StockQuantity" name="quantity" aria-label="Số lượng" required>
                             <div class="input-group-btn">
-                                <button class="btn btn-sm btn-plus rounded-circle bg-light border" type="button">
-                                    <i class="fa fa-plus"></i>
+                                <button class="btn btn-sm btn-plus rounded-circle bg-light border" type="button" aria-label="Tăng số lượng">
+                                    <i class="fa fa-plus" aria-hidden="true"></i>
                                 </button>
                             </div>
                         </div>
-                            <button class="btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary"><i class="fa fa-shopping-bag me-2 text-primary"></i>Thêm Vào Giỏ Hàng</button>
+                            <p class="small text-muted mb-3">Còn @Model.StockQuantity sản phẩm</p>
+                            <button type="submit" class="btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary"><i class="fa fa-shopping-bag me-2 text-primary" aria-hidden="true"></i>Thêm Vào Giỏ Hàng</button>
                         </form>
+                        }
+                        else
+                        {
+                            <p class="text-danger fw-semibold">Sản phẩm hiện đã hết hàng.</p>
+                            <button type="button" class="btn btn-secondary rounded-pill px-4 py-2 mb-4" disabled>Hết hàng</button>
+                        }
                     </div>
 
                     <div class="col-lg-12 mt-5">
@@ -93,10 +122,11 @@
             <div class="col-lg-4 col-xl-3">
                 <div class="row g-4 fruite">
                     <div class="col-lg-12">
-                        <div class="input-group w-100 mx-auto d-flex mb-4">
-                            <input type="search" class="form-control p-3" placeholder="Tìm kiếm" aria-describedby="search-icon-1">
-                            <span id="search-icon-1" class="input-group-text p-3"><i class="fa fa-search"></i></span>
-                        </div>
+                        <form asp-action="Search" asp-controller="SanPham" method="get" class="input-group w-100 mx-auto d-flex mb-4">
+                            <label for="detailSearch" class="visually-hidden">Tìm kiếm sản phẩm</label>
+                            <input id="detailSearch" name="query" type="search" class="form-control p-3" placeholder="Tìm kiếm sản phẩm">
+                            <button type="submit" class="input-group-text" aria-label="Tìm kiếm"><i class="fa fa-search" aria-hidden="true"></i></button>
+                        </form>
 						@await Component.InvokeAsync("Category")
                     </div>
                   
@@ -133,5 +163,3 @@
         </div>
     </div>
 </div>
-
-

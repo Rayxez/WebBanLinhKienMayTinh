@@ -47,7 +47,8 @@ namespace HTNLShop.Controllers
                 Price = p.Price,
                 ProductDetail = p.ProductDetail,
                 CategoryId = p.CategoryId,
-                CategoryName = p.Category.CategoryName
+                CategoryName = p.Category.CategoryName,
+                StockQuantity = p.StockQuantity
             }).ToPagedList(pageNumber, pageSize);
             return View(list);
         }
@@ -68,7 +69,8 @@ namespace HTNLShop.Controllers
                 Price = p.Price,
                 ProductDetail = p.ProductDetail,
                 CategoryId = p.CategoryId,
-                CategoryName = p.Category.CategoryName
+                CategoryName = p.Category.CategoryName,
+                StockQuantity = p.StockQuantity
             }).ToList();
 
             return View(list);
@@ -123,7 +125,8 @@ namespace HTNLShop.Controllers
                         Price = p.Price,
                         ProductDetail = p.ProductDetail,
                         CategoryId = p.CategoryId,
-                        CategoryName = p.Category.CategoryName
+                        CategoryName = p.Category.CategoryName,
+                        StockQuantity = p.StockQuantity
                     }).ToList(),
                     Reviews = reviews
             };

@@ -53,15 +53,14 @@ namespace HTNLShop.Controllers
         public async Task<IActionResult> _PostReview(ReviewVM review)
         {
             if (!ModelState.IsValid)
-                return RedirectToAction("Detail", "SanPham", new { id = review.ProductId });
+                return BadRequest(new { message = "Vui lòng nhập nội dung đánh giá hợp lệ." });
 
             if (!int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var userId))
                 return Challenge();
 
             if (review.Rate is < 1 or > 5)
             {
-                TempData["Message"] = "Số sao phải từ 1 đến 5.";
-                return RedirectToAction("Detail", "SanPham", new { id = review.ProductId });
+                return BadRequest(new { message = "Số sao phải từ 1 đến 5." });
             }
 
             // Chỉ người đã mua sản phẩm (đơn không bị huỷ) mới được đánh giá.
@@ -72,8 +71,7 @@ namespace HTNLShop.Controllers
 
             if (!hasPurchased)
             {
-                TempData["Message"] = "Bạn cần mua sản phẩm này trước khi đánh giá.";
-                return RedirectToAction("Detail", "SanPham", new { id = review.ProductId });
+                return BadRequest(new { message = "Bạn cần mua sản phẩm này trước khi đánh giá." });
             }
 
             var entity = new Review
@@ -106,7 +104,7 @@ namespace HTNLShop.Controllers
                 })
                 .ToListAsync();
 
-            return RedirectToAction("Detail", "SanPham", new { id = review.ProductId });
+            return PartialView("~/Views/Review/_ListReview.cshtml", reviews);
         }
 
         public IActionResult Index()
@@ -115,4 +113,3 @@ namespace HTNLShop.Controllers
         }
     }
 }
-

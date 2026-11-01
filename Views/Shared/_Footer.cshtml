@@ -1,72 +1,47 @@
-﻿<!-- Footer Start -->
-<div class="container-fluid bg-dark text-white-50 footer pt-5 mt-5">
+<footer class="container-fluid bg-dark text-white-50 footer pt-5 mt-5">
     <div class="container py-5">
-        <div class="pb-4 mb-4" style="border-bottom: 1px solid rgba(226, 175, 24, 0.5) ;">
-            <div class="row g-4">
-                <div class="col-lg-3">
-                    <a href="#">
-                        <h1 class="text-primary mb-0">PC-HTNL</h1>
-                        <p class="text-secondary mb-0">Linh kiện chính hãng</p>
-                    </a>
-                </div>
-                <div class="col-lg-6">
-                    <div class="position-relative mx-auto">
-                        <input class="form-control border-0 w-100 py-3 px-4 rounded-pill" type="number" placeholder="Email của bạn">
-                        <button type="submit" class="btn btn-primary border-0 border-secondary py-3 px-4 position-absolute rounded-pill text-white" style="top: 0; right: 0;">Đăng ký ngay</button>
-                    </div>
-                </div>
-                <div class="col-lg-3">
-                    <div class="d-flex justify-content-end pt-3">
-                        <a class="btn  btn-outline-secondary me-2 btn-md-square rounded-circle" href=""><i class="fab fa-twitter"></i></a>
-                        <a class="btn btn-outline-secondary me-2 btn-md-square rounded-circle" href=""><i class="fab fa-facebook-f"></i></a>
-                        <a class="btn btn-outline-secondary me-2 btn-md-square rounded-circle" href=""><i class="fab fa-youtube"></i></a>
-                        <a class="btn btn-outline-secondary btn-md-square rounded-circle" href=""><i class="fab fa-linkedin-in"></i></a>
-                    </div>
-                </div>
-            </div>
-        </div>
         <div class="row g-5">
-            <div class="col-lg-3 col-md-6">
-                <div class="footer-item">
-                    <h4 class="text-light mb-3">Vì sao khách hàng tin tưởng chúng tôi?</h4>
-                    <p class="mb-4">
-                        Với sự đa dạng về mẫu mã và giá cả cạnh tranh, chúng tôi luôn nỗ lực không ngừng để mang đến những linh kiện PC chất lượng nhất. Từ những bộ vi xử lý hàng đầu đến các mẫu card đồ họa mới nhất, tất cả đều được đảm bảo chính hãng và sẵn sàng để bạn xây dựng cấu hình mơ ước.
-                    </p>
-                    <a href="" class="btn border-secondary py-2 px-4 rounded-pill text-primary">Thêm thông tin</a>
-                </div>
+            <div class="col-lg-4 col-md-6">
+                <a asp-controller="TrangChu" asp-action="Index" class="text-decoration-none">
+                    <span class="h2 text-primary fw-bold">HTNL.Shop</span>
+                </a>
+                <p class="mt-3 mb-4">Tìm laptop, PC và linh kiện phù hợp với cấu hình bạn đang cần.</p>
+                <a asp-controller="SanPham" asp-action="Index" class="btn btn-primary rounded-pill px-4 py-2">Khám phá sản phẩm</a>
             </div>
             <div class="col-lg-3 col-md-6">
                 <div class="d-flex flex-column text-start footer-item">
-                    <h4 class="text-light mb-3">Thông tin Shop </h4>
-                    <a class="btn-link" href="">Về chúng tôi</a>
-                    <a class="btn-link" href="">Chính sách bảo mật</a>
-                    <a class="btn-link" href="">Điều khoản và điều kiện</a>
-                    <a class="btn-link" href="">Chính sách đổi trả</a>
-                    <a class="btn-link" href="">Câu hỏi thường gặp và trợ giúp</a>
+                    <h4 class="text-light mb-3">Mua sắm</h4>
+                    <a class="btn-link" asp-controller="SanPham" asp-action="Index">Tất cả sản phẩm</a>
+                    <a class="btn-link" asp-controller="Cart" asp-action="Index">Giỏ hàng</a>
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        <a class="btn-link" asp-controller="Order" asp-action="Index">Lịch sử mua hàng</a>
+                        <a class="btn-link" asp-controller="Customer" asp-action="ProFile">Hồ sơ của tôi</a>
+                    }
+                    else
+                    {
+                        <a class="btn-link" asp-controller="Customer" asp-action="Login">Đăng nhập để xem đơn hàng</a>
+                        <a class="btn-link" asp-controller="Customer" asp-action="Register">Tạo tài khoản</a>
+                    }
                 </div>
             </div>
-            <div class="col-lg-3 col-md-6">
+            <div class="col-lg-2 col-md-6">
                 <div class="d-flex flex-column text-start footer-item">
-                    <h4 class="text-light mb-3">Tài khoản</h4>
-                    <a class="btn-link" href="">Tài khoản của tôi</a>
-                    <a class="btn-link" href="">Thông tin shop</a>
-                    <a class="btn-link" href="">Giỏ hàng</a>
-                    <a class="btn-link" href="">Danh sách yêu thích</a>
-                    <a class="btn-link" href="">Lịch sử mua hàng</a>
-                    <a class="btn-link" href="">Đơn hàng quốc tế</a>
+                    <h4 class="text-light mb-3">Hỗ trợ</h4>
+                    <a class="btn-link" asp-controller="LienHe" asp-action="LienHe">Liên hệ với shop</a>
+                    <a class="btn-link" href="mailto:htnlshop@gmail.com">Gửi email</a>
+                    <a class="btn-link" href="tel:+088866669999">Gọi hotline</a>
                 </div>
             </div>
             <div class="col-lg-3 col-md-6">
                 <div class="footer-item">
-                    <h4 class="text-light mb-3">Contact</h4>
-                    <p>Địa chỉ: 218 Lĩnh Nam, Hoàng Mai, Hà Nội</p>
-                    <p>Email: htnlshop@gmail.com</p>
-                    <p>Số điện thoại: +0888 6666 9999</p>
-                    <p>Được chấp nhận</p>
-                    <img src="img/payment.png" class="img-fluid" alt="">
+                    <h4 class="text-light mb-3">HTNL.Shop</h4>
+                    <p><i class="fas fa-map-marker-alt me-2 text-secondary" aria-hidden="true"></i>218 Lĩnh Nam, Hoàng Mai, Hà Nội</p>
+                    <p><i class="fas fa-envelope me-2 text-secondary" aria-hidden="true"></i><a href="mailto:htnlshop@gmail.com">htnlshop@gmail.com</a></p>
+                    <p><i class="fas fa-phone-alt me-2 text-secondary" aria-hidden="true"></i><a href="tel:+088866669999">+0888 6666 9999</a></p>
+                    <p class="mb-0">Thứ Hai – Thứ Bảy: 8:00 – 18:00</p>
                 </div>
             </div>
         </div>
     </div>
-</div>
-<!-- Footer End -->
+</footer>

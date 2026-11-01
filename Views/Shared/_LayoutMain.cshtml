@@ -49,13 +49,11 @@
             <div class="container topbar bg-primary d-none d-lg-block">
                 <div class="d-flex justify-content-between">
                     <div class="top-info ps-2">
-                        <small class="me-3"><i class="fas fa-map-marker-alt me-2 text-secondary"></i> <a href="#" class="text-white">218 Lĩnh Nam</a></small>
-                        <small class="me-3"><i class="fas fa-envelope me-2 text-secondary"></i><a href="#" class="text-white">HTNL.Shop@gmail.com</a></small>
+                        <small class="me-3"><i class="fas fa-map-marker-alt me-2 text-secondary"></i> <a href="https://www.google.com/maps/search/?api=1&amp;query=218+Linh+Nam+Hoang+Mai+Ha+Noi" class="text-white">218 Lĩnh Nam</a></small>
+                        <small class="me-3"><i class="fas fa-envelope me-2 text-secondary"></i><a href="mailto:htnlshop@gmail.com" class="text-white">htnlshop@gmail.com</a></small>
                     </div>
                     <div class="top-link pe-2">
-                        <a href="#" class="text-white"><small class="text-white mx-2">Privacy Policy</small>/</a>
-                        <a href="#" class="text-white"><small class="text-white mx-2">Terms of Use</small>/</a>
-                        <a href="#" class="text-white"><small class="text-white ms-2">Sales and Refunds</small></a>
+                        <a asp-controller="LienHe" asp-action="LienHe" class="text-white"><small class="text-white mx-2">Hỗ trợ &amp; liên hệ</small></a>
                     </div>
                 </div>
             </div>
@@ -78,7 +76,7 @@
                             }
                         </div>
                         <div class="d-flex m-3 me-0">
-                            <button class="btn-search btn border border-secondary btn-md-square rounded-circle bg-white me-4" data-bs-toggle="modal" data-bs-target="#searchModal"><i class="fas fa-search text-primary"></i></button>
+                            <button type="button" class="btn-search btn border border-secondary btn-md-square rounded-circle bg-white me-4" data-bs-toggle="modal" data-bs-target="#searchModal" aria-label="Mở tìm kiếm"><i class="fas fa-search text-primary" aria-hidden="true"></i></button>
                             @* <a asp-controller="Cart" asp-action="Index" class="position-relative me-4 my-auto">
                                 <i class="fa fa-shopping-bag fa-2x"></i>
                                 <span class="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-dark px-1" style="top: -5px; left: 15px; height: 20px; min-width: 20px;">3</span>
@@ -87,10 +85,10 @@
                             @if(User.Identity.IsAuthenticated)
                             {
                                 <div class="dropdown">
-                                    <a class="my-auto dropdown-toggle text-decoration-none text-dark" href="#" role="button" id="userMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <button class="my-auto dropdown-toggle text-decoration-none text-dark btn btn-link p-0" type="button" id="userMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
                                         <i class="fas fa-user fa-2x"></i>
                                         <span class="ms-2">@User.Identity.Name</span>
-                                    </a>
+                                    </button>
                                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenuLink">
                                         <li><a class="dropdown-item" asp-controller="Order" asp-action="Index">Lịch sử mua hàng</a></li>
                                         <li><a class="dropdown-item" asp-controller="Customer" asp-action="Logout">Đăng Xuất</a></li>
@@ -98,13 +96,8 @@
                                 </div>
                             }
                             else{
-                            <a asp-action="Login" asp-controller="Customer" class="my-auto"> 
-                            @* <a asp-controller="Customer" asp-action="Login"
-                               asp-route-returnurl="@(Context.Request.Path + Context.Request.QueryString)">
-                                Đăng nhập
-                            </a> *@
-                           
-                                <i class="fas fa-user fa-2x"></i>
+                            <a asp-action="Login" asp-controller="Customer" asp-route-returnUrl="@(Context.Request.Path + Context.Request.QueryString)" class="my-auto" aria-label="Đăng nhập">
+                                <i class="fas fa-user fa-2x" aria-hidden="true"></i>
                             </a>
                             }
                         </div>
@@ -116,32 +109,50 @@
 
         <!-- Navbar End -->
         <!-- Modal Search Start -->
-        <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="searchModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-fullscreen">
                 <div class="modal-content rounded-0">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Tìm Kiếm Sản Phẩm</h5>
+                        <h5 class="modal-title" id="searchModalLabel">Tìm Kiếm Sản Phẩm</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body d-flex align-items-center">
-                        <div class="input-group w-75 mx-auto d-flex">
-                            <input id="searchText" type="search" class="form-control p-3" placeholder="Tìm Kiếm Sản Phẩm" aria-describedby="search-icon-1">
-                            <span id="searchButton" class="input-group-text p-3"><i class="fa fa-search"></i></span>
-                        </div>
+                        <form asp-action="Search" asp-controller="SanPham" method="get" class="input-group w-75 mx-auto">
+                            <label for="searchText" class="visually-hidden">Tìm kiếm sản phẩm</label>
+                            <input id="searchText" name="query" type="search" class="form-control p-3" placeholder="Tìm laptop, PC, linh kiện..." required>
+                            <button id="searchButton" type="submit" class="input-group-text px-4" aria-label="Tìm kiếm"><i class="fa fa-search" aria-hidden="true"></i></button>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
         <!-- Modal Search End -->
-    </header>
-    <div style="margin-top: 120px;"></div>
+    <div id="top" style="margin-top: 120px;"></div>
+    @if (TempData["Message"] is string message)
+    {
+        <div class="container mt-3">
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                @message
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Đóng"></button>
+            </div>
+        </div>
+    }
+    @if (TempData["Success"] is string success)
+    {
+        <div class="container mt-3">
+            <div class="alert alert-success alert-dismissible fade show" role="status">
+                @success
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Đóng"></button>
+            </div>
+        </div>
+    }
     <div class="bg-light">
         @RenderBody()
     </div>
 
 	@await Html.PartialAsync("_Footer")
 	<!-- Back to Top -->
-    <a href="#" class="btn btn-primary border-3 border-primary rounded-circle back-to-top"><i class="fa fa-arrow-up"></i></a>
+    <a href="#top" class="btn btn-primary border-3 border-primary rounded-circle back-to-top" aria-label="Lên đầu trang"><i class="fa fa-arrow-up" aria-hidden="true"></i></a>
 
     <!-- JavaScript Libraries -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
@@ -152,19 +163,8 @@
     <script src="~/lib/owlcarousel/owl.carousel.min.js"></script>
 
     <!-- Template Javascript -->
-    <script src="~/js/main.js"></script>
+    <script src="~/js/main.js" asp-append-version="true"></script>
 
 	@RenderSection("Scripts", required: false)
-    <script>
-        $(document).ready(function () {
-            $("#searchButton").click(function () {
-                var query = $("#searchText").val();
-                if (query) {
-                    var url = "@Url.Action("Search", "SanPham")" + "?query=" + encodeURIComponent(query);
-                    window.location.href = url;
-                }
-            });
-		});
-    </script>
 </body>
 </html>

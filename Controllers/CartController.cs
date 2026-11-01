@@ -147,6 +147,12 @@ namespace HTNLShop.Controllers
         // Replace/Add the modified AddToCart, IncreaseQuantity and DecreaseQuantity methods
         public async Task<IActionResult> AddToCart(int id, int quantity = 1)
         {
+            if (quantity < 1)
+            {
+                TempData["Message"] = "Số lượng phải lớn hơn 0.";
+                return RedirectToAction("Detail", "SanPham", new { id });
+            }
+
             if (User.Identity != null && User.Identity.IsAuthenticated)
             {
                 var userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);

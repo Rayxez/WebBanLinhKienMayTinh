@@ -25,14 +25,14 @@
                         <i class="fas fa-phone-alt fa-2x text-primary me-3 mt-1"></i>
                         <div>
                             <strong class="text-dark">Hotline Hỗ Trợ</strong>
-                            <p class="mb-0">+0888 6666 9999 (Hỗ trợ Kỹ thuật & Bán hàng)</p>
+                            <p class="mb-0"><a href="tel:+088866669999">+0888 6666 9999 (Hỗ trợ Kỹ thuật &amp; Bán hàng)</a></p>
                         </div>
                     </li>
                     <li class="mb-3 d-flex align-items-start">
                         <i class="fas fa-envelope fa-2x text-primary me-3 mt-1"></i>
                         <div>
                             <strong class="text-dark">Email Giao Dịch</strong>
-                            <p class="mb-0">htnlshop@gmail.com</p>
+                            <p class="mb-0"><a href="mailto:htnlshop@gmail.com">htnlshop@gmail.com</a></p>
                         </div>
                     </li>
                     <li class="mb-3 d-flex align-items-start">
@@ -55,37 +55,59 @@
         <div class="col-lg-7">
             <div class="card p-5 shadow-lg border-0 bg-white">
                 <h3 class="h4 mb-4 text-primary">Gửi Yêu Cầu Đến Đội Ngũ Của Chúng Tôi</h3>
-                <form>
+                <p class="text-muted">Gửi yêu cầu qua ứng dụng email của bạn. Nội dung sẽ được điền sẵn để bạn kiểm tra trước khi gửi.</p>
+                <form id="contactRequestForm">
                     <div class="row g-3">
                         <div class="col-md-6">
                             <label for="contactName" class="form-label">Họ và Tên (*)</label>
-                            <input type="text" class="form-control" id="contactName" required>
+                            <input type="text" class="form-control" id="contactName" name="name" autocomplete="name" required>
                         </div>
                         <div class="col-md-6">
                             <label for="contactEmail" class="form-label">Địa Chỉ Email (*)</label>
-                            <input type="email" class="form-control" id="contactEmail" required>
+                            <input type="email" class="form-control" id="contactEmail" name="email" autocomplete="email" required>
                         </div>
                         <div class="col-12">
                             <label for="contactSubject" class="form-label">Chủ Đề Yêu Cầu</label>
-                            <select class="form-select" id="contactSubject">
-                                <option selected>Chọn loại yêu cầu...</option>
-                                <option value="1">Hỗ trợ Kỹ thuật</option>
-                                <option value="2">Thông tin Đặt hàng/Giao hàng</option>
-                                <option value="3">Yêu cầu Hợp tác</option>
-                                <option value="4">Khác</option>
+                            <select class="form-select" id="contactSubject" name="subject" required>
+                                <option value="" selected disabled>Chọn loại yêu cầu...</option>
+                                <option value="Hỗ trợ kỹ thuật">Hỗ trợ Kỹ thuật</option>
+                                <option value="Thông tin đơn hàng/giao hàng">Thông tin Đặt hàng/Giao hàng</option>
+                                <option value="Yêu cầu hợp tác">Yêu cầu Hợp tác</option>
+                                <option value="Khác">Khác</option>
                             </select>
                         </div>
                         <div class="col-12">
                             <label for="contactMessage" class="form-label">Nội dung tin nhắn (*)</label>
-                            <textarea class="form-control" id="contactMessage" rows="7" required></textarea>
+                            <textarea class="form-control" id="contactMessage" name="message" rows="7" required></textarea>
                         </div>
                         <div class="col-12 mt-4">
                             <button type="submit" class="btn btn-primary btn-lg px-5">Gửi Tin Nhắn</button>
                         </div>
                     </div>
                 </form>
+                <p class="small text-muted mt-3 mb-0" role="status">Nếu ứng dụng email không mở, bạn có thể gửi trực tiếp tới <a href="mailto:htnlshop@gmail.com">htnlshop@gmail.com</a>.</p>
             </div>
         </div>
     </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+
+@section Scripts {
+    <script>
+        document.getElementById("contactRequestForm").addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            const form = new FormData(event.currentTarget);
+            const subject = `[HTNL.Shop] ${form.get("subject")}`;
+            const body = [
+                `Họ tên: ${form.get("name")}`,
+                `Email liên hệ: ${form.get("email")}`,
+                "",
+                "Nội dung:",
+                form.get("message")
+            ].join("\n");
+
+            window.location.href = `mailto:htnlshop@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        });
+    </script>
+}

@@ -36,7 +36,8 @@ namespace HTNLShop.Controllers
                     Price = oi.Product.Price,
                     CategoryId = oi.Product.CategoryId,
                     CategoryName = oi.Product.Category.CategoryName,
-                    ImageUrl = oi.Product.ImageUrl
+                    ImageUrl = oi.Product.ImageUrl,
+                    StockQuantity = oi.Product.StockQuantity
                 })
                 .ToList();
 
@@ -54,7 +55,8 @@ namespace HTNLShop.Controllers
                             oi.ProductDetail,
                             oi.Price,
                             oi.CategoryId,
-                            oi.ImageUrl
+                            oi.ImageUrl,
+                            oi.StockQuantity
                         })
                         .Select(productGroup => new BestSellingProductVM
                         {
@@ -65,6 +67,7 @@ namespace HTNLShop.Controllers
                             CategoryId = productGroup.Key.CategoryId,
                             CategoryName = categoryGroup.Key.CategoryName,
                             ImageUrl = productGroup.Key.ImageUrl,
+                            StockQuantity = productGroup.Key.StockQuantity,
                             TotalQuantitySold = productGroup.Sum(oi => oi.Quantity)
                         })
                         .OrderByDescending(p => p.TotalQuantitySold)
@@ -86,7 +89,8 @@ namespace HTNLShop.Controllers
                     Price = p.Price,
                     ProductDetail = p.ProductDetail,
                     CategoryId = p.CategoryId,
-                    CategoryName = p.Category.CategoryName
+                    CategoryName = p.Category.CategoryName,
+                    StockQuantity = p.StockQuantity
                 }).ToList();
             //Lấy số lượng sản phẩm đang có sẵn
             var  Total = _context.Products.Count();
