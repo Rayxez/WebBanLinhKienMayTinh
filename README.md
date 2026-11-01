@@ -47,13 +47,15 @@ Sơ đồ kiến trúc và luồng đặt hàng: [`docs/architecture.md`](docs/a
 
 ### Yêu cầu
 - [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
-- SQL Server (LocalDB đi kèm Visual Studio, hoặc SQL Server Express/Developer)
+- SQL Server: LocalDB trên Windows, SQL Server Express/Developer, hoặc dùng Docker Compose bên dưới.
 
-### Ba lệnh
+Clone repository, rồi chạy các lệnh từ thư mục gốc vừa clone:
 
 ```bash
+git clone https://github.com/Rayxez/WebBanLinhKienMayTinh.git
+cd WebBanLinhKienMayTinh
 dotnet restore
-dotnet run --project HTNLShop
+dotnet run --project HTNLShop.csproj
 ```
 
 Ứng dụng tự tạo CSDL và seed dữ liệu khi chạy ở môi trường `Development`.
@@ -62,10 +64,10 @@ Nếu muốn tạo CSDL thủ công:
 
 ```bash
 dotnet tool install --global dotnet-ef --version 8.0.11
-dotnet ef database update --project HTNLShop
+dotnet ef database update --project HTNLShop.csproj
 ```
 
-Mở `https://localhost:7xxx` (xem cổng trong `HTNLShop/Properties/launchSettings.json`).
+Mở URL được in ra trong terminal (cấu hình cổng trong `Properties/launchSettings.json`).
 
 ### Tài khoản demo
 
