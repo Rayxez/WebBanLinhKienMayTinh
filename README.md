@@ -80,7 +80,7 @@ Mở URL được in ra trong terminal (cấu hình cổng trong `Properties/lau
 
 ### Chuỗi kết nối
 
-Mặc định dùng LocalDB (`HTNLShop/appsettings.json`). Khi triển khai, đặt qua biến môi trường:
+Mặc định dùng LocalDB (`appsettings.json`). Khi triển khai, đặt qua biến môi trường:
 
 ```bash
 export ConnectionStrings__HTLNShop="Server=...;Database=...;User Id=...;Password=...;TrustServerCertificate=True"
