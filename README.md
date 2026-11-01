@@ -1,55 +1,66 @@
-# HTNL Shop — Website bán máy tính & linh kiện
+# HTNL Shop
 
-Website thương mại điện tử xây dựng bằng **ASP.NET Core MVC 8**, **Entity Framework Core 8**, **ASP.NET Core Identity** và **SQL Server**.
+[![CI](https://github.com/Rayxez/WebBanLinhKienMayTinh/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Rayxez/WebBanLinhKienMayTinh/actions/workflows/ci.yml)
+[![.NET](https://img.shields.io/badge/.NET-8.0-512BD4)](https://dotnet.microsoft.com/)
+[![ASP.NET Core MVC](https://img.shields.io/badge/ASP.NET%20Core-MVC-512BD4)](https://learn.microsoft.com/aspnet/core/)
 
-> Dự án được nâng cấp từ đồ án môn học lên mức "sản phẩm nhỏ vận hành được": có xác thực chuẩn, phân quyền theo vai trò,
-> vòng đời đơn hàng, kiểm thử tự động và pipeline triển khai.
+HTNL Shop is a full-stack e-commerce application for computers and PC components. Built with ASP.NET Core MVC, Entity Framework Core, ASP.NET Core Identity, and SQL Server, it includes a customer storefront, inventory-aware shopping and checkout, and a role-protected admin area.
 
-![Trang chủ HTNL Shop](docs/screenshots/01-trang-chu.png)
+> **Portfolio project:** developed from a university project into a production-style application with automated tests, database migrations, containerized setup, and GitHub Actions CI.
 
-## Ảnh chụp
+## Screenshots
 
-| Khách hàng | Quản trị |
+| Storefront | Product catalog |
 |---|---|
-| ![Danh sách sản phẩm](docs/screenshots/02-danh-sach-san-pham.png) | ![Dashboard](docs/screenshots/05-admin-dashboard.png) |
-| ![Chi tiết sản phẩm](docs/screenshots/03-chi-tiet-san-pham.png) | ![Quản lý đơn hàng](docs/screenshots/06-admin-don-hang.png) |
+| ![HTNL Shop storefront](docs/screenshots/01-trang-chu.png) | ![Product catalog](docs/screenshots/02-danh-sach-san-pham.png) |
 
-Sơ đồ kiến trúc và luồng đặt hàng: [`docs/architecture.md`](docs/architecture.md).
+| Product details | Admin dashboard |
+|---|---|
+| ![Product details](docs/screenshots/03-chi-tiet-san-pham.png) | ![Admin dashboard](docs/screenshots/05-admin-dashboard.png) |
 
----
+See the [system architecture and order flow](docs/architecture.md) for more detail.
 
-## Tính năng
+## Features
 
-**Khách hàng**
-- Xem danh mục, tìm kiếm, sắp xếp, phân trang sản phẩm (480 sản phẩm / 16 danh mục)
-- Giỏ hàng cho khách vãng lai (session) — tự động gộp vào giỏ lưu CSDL khi đăng nhập
-- Đặt hàng: thông tin người nhận, ghi chú, kiểm tra tồn kho, trừ kho trong transaction
-- Lịch sử đơn hàng, chi tiết đơn, hồ sơ cá nhân
-- Đánh giá sản phẩm (chỉ người đã mua, 1–5 sao)
+### Customer storefront
 
-**Quản trị**
-- Dashboard: doanh thu (chỉ tính đơn đã giao/hoàn tất), đơn chờ xử lý, tồn kho thấp, top bán chạy
-- Quản lý sản phẩm: thêm/sửa/xoá, upload ảnh, lọc theo danh mục, tìm kiếm, phân trang
-- Quản lý người dùng: tạo tài khoản, đổi vai trò, đặt lại mật khẩu, chặn xoá khi đã có đơn
-- Quản lý đơn hàng: chuyển trạng thái theo đúng luật (chờ xác nhận → đã xác nhận → đang giao → đã giao → hoàn tất),
-  huỷ đơn tự động hoàn lại tồn kho, lọc theo trạng thái, tìm theo mã/tên/email
+- Browse, search, sort, filter, and paginate a seeded catalog of 480 products across 16 categories.
+- Add products to a session-based guest cart; merge the cart into the customer account after sign-in.
+- Check stock during cart updates and checkout; create orders within a database transaction.
+- View order history, order details, and account profile.
+- Submit product reviews after purchasing the product.
 
-**Bảo mật**
-- ASP.NET Core Identity: hash PBKDF2, khoá tài khoản sau 5 lần sai, cookie `HttpOnly` + `SameSite`
-- Phân quyền theo vai trò (`Admin`, `Customer`), toàn bộ khu vực `/Admin` được bảo vệ
-- Chống CSRF toàn cục cho mọi POST (kể cả AJAX)
-- Chống IDOR: mọi truy vấn đơn hàng đều lọc theo người dùng hiện tại
-- Security headers, trang lỗi 404/403/500 thân thiện, không lộ stack trace ở Production
+### Admin area
 
----
+- View sales, pending orders, low-stock products, and best-selling items on the dashboard.
+- Create, edit, search, filter, paginate, and remove products; upload product images.
+- Manage user accounts and roles.
+- Process orders through validated status transitions; cancel orders and restore inventory.
 
-## Chạy dự án
+### Security and reliability
 
-### Yêu cầu
-- [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
-- SQL Server: LocalDB trên Windows, SQL Server Express/Developer, hoặc dùng Docker Compose bên dưới.
+- ASP.NET Core Identity password hashing, account lockout, and role-based authorization.
+- Antiforgery validation for non-GET requests, including AJAX requests.
+- Ownership checks for customer order access.
+- Inventory concurrency protection to reduce overselling.
+- Security response headers, friendly error pages, and a health endpoint at `/health`.
 
-Clone repository, rồi chạy các lệnh từ thư mục gốc vừa clone:
+## Technology
+
+- ASP.NET Core MVC 8 and Razor
+- Entity Framework Core 8 and SQL Server
+- ASP.NET Core Identity
+- xUnit, `WebApplicationFactory`, and SQL Server integration tests
+- Docker Compose and GitHub Actions
+
+## Run locally
+
+### Requirements
+
+- .NET 8 SDK
+- SQL Server. Windows developers can use SQL Server LocalDB; Docker Compose is available as an alternative.
+
+Clone the repository and run the commands from its root:
 
 ```bash
 git clone https://github.com/Rayxez/WebBanLinhKienMayTinh.git
@@ -58,119 +69,66 @@ dotnet restore
 dotnet run --project HTNLShop.csproj
 ```
 
-Ứng dụng tự tạo CSDL và seed dữ liệu khi chạy ở môi trường `Development`.
+The default development connection string uses SQL Server LocalDB. In `Development`, the app applies migrations and seeds demo data and accounts. Open the URL printed by `dotnet run`.
 
-Nếu muốn tạo CSDL thủ công:
+Development demo accounts:
 
-```bash
-dotnet tool install --global dotnet-ef --version 8.0.11
-dotnet ef database update --project HTNLShop.csproj
-```
-
-Mở URL được in ra trong terminal (cấu hình cổng trong `Properties/launchSettings.json`).
-
-### Tài khoản demo
-
-| Vai trò | Tên đăng nhập | Mật khẩu |
+| Role | Username | Password |
 |---|---|---|
-| Quản trị | `admin` | `Admin@12345` |
-| Khách hàng | `customer` | `Customer@123` |
+| Admin | `admin` | `Admin@12345` |
+| Customer | `customer` | `Customer@123` |
 
-> Đây là tài khoản demo chỉ dùng cho môi trường Development. Không dùng lại các mật khẩu này ở môi trường khác.
+These credentials are for local development only. Do not use them in a deployed environment.
 
-### Chuỗi kết nối
+### Run with Docker Compose
 
-Mặc định dùng LocalDB (`appsettings.json`). Khi triển khai, đặt qua biến môi trường:
-
-```bash
-export ConnectionStrings__HTLNShop="Server=...;Database=...;User Id=...;Password=...;TrustServerCertificate=True"
-```
-
-### Chạy bằng Docker
-
-Tạo file `.env` từ mẫu và thay các giá trị bằng mật khẩu riêng, đủ mạnh:
+Install Docker Desktop or Docker Engine with the Compose plugin. Create a local environment file from the example and replace its placeholder passwords with strong, unique values:
 
 ```powershell
 Copy-Item .env.example .env
 ```
 
-Không commit hoặc chia sẻ file `.env`.
-
 ```bash
 docker compose up --build
 ```
 
-- Web: <http://localhost:8080>
-- SQL Server: `localhost:1433` (tài khoản `sa`, mật khẩu lấy từ `.env`)
+- Storefront: <http://localhost:8080>
 - Health check: <http://localhost:8080/health>
+- SQL Server: `localhost:1433`
 
-Trong container, `Database__AutoMigrate=true` nên CSDL được tạo và seed tự động.
+The `.env` file contains local secrets and must not be committed. Docker Compose applies database migrations and seeds the configured demo accounts.
 
----
+## Tests
 
-## Cấu trúc
-
-```
-HTNLShop/
-├─ Controllers/          # Trang chủ, sản phẩm, giỏ hàng, đơn hàng, tài khoản, đánh giá
-├─ Areas/Admin/          # Khu quản trị (kế thừa AdminBaseController → bắt buộc role Admin)
-├─ Data/                 # DbContext, entity, OrderStatus, DbSeeder, design-time factory
-├─ Services/             # CartMergeService (gộp giỏ session → CSDL)
-├─ ViewModels/           # DTO cho view, tách khỏi entity
-├─ Views/                # Razor
-├─ Migrations/           # Migration khởi tạo (đã commit)
-└─ docs/                 # Báo cáo đánh giá, lộ trình, backlog, tài liệu CV
-```
-
----
-
-## Kiểm thử
+Run the test suite from the repository root:
 
 ```bash
 dotnet test
 ```
 
-Bộ test hiện có **44 test** (xUnit + `WebApplicationFactory`), chạy trên một CSDL SQL Server riêng cho mỗi lần chạy:
+The suite contains 44 xUnit domain, security, authorization, checkout, and order-lifecycle tests. It uses a separate SQL Server database for each test run. By default, tests use LocalDB on Windows; to use another SQL Server, set `HTNLSHOP_TEST_CONNECTION` before running the tests.
 
-- **Ma trận phân quyền**: 5 URL quản trị × 3 vai trò (ẩn danh / Customer / Admin)
-- **CSRF**: POST thiếu token → 400 (3 case)
-- **Security headers** + **health check** trên mọi response
-- **Checkout end-to-end**: thêm giỏ → đặt hàng → kiểm tra trạng thái, `SalePrice`, tồn kho
-- **Vòng đời đơn**: đi đủ 4 bước, huỷ đơn hoàn kho, chặn nhảy cóc trạng thái (14 case)
-- **Domain**: trạng thái mặc định, doanh thu chỉ tính đơn đã giao, thành tiền, validate đăng ký
+The GitHub Actions workflow runs restore, a Release build, tests with coverage, a vulnerable-package check, and a Docker image build.
 
-Coverage (loại trừ migration và Razor generated): **60,8% dòng** — cấu hình trong `tests/HTNLShop.Tests/coverlet.runsettings`.
+## Repository structure
 
----
+```text
+Areas/Admin/    Admin controllers and views
+Controllers/    Storefront, cart, account, order, and review endpoints
+Data/           EF Core context, entities, seeder, and migrations
+Services/       Reusable application services
+ViewModels/     View-specific models
+Views/          Razor pages and shared layouts
+tests/          Automated test suite
+docs/           Architecture, screenshots, and project notes
+```
 
-## Trạng thái & lộ trình
+## Current scope
 
-Xem [`docs/BAO_CAO_DANH_GIA_VA_LO_TRINH.md`](docs/BAO_CAO_DANH_GIA_VA_LO_TRINH.md) và [`docs/TIEN-DO.md`](docs/TIEN-DO.md).
+- Checkout creates an order; no payment gateway is integrated yet.
+- The contact form opens a prefilled email draft in the visitor's email application; the app does not send email from a server.
+- Payment sandbox integration, transactional email, deployment, and load testing remain future work.
 
-Đã hoàn thành:
-- [x] Chuyển sang ASP.NET Core Identity, bỏ mật khẩu plaintext
-- [x] Sửa lỗi đăng ký thành Admin, bảo vệ toàn bộ khu vực quản trị
-- [x] CSRF toàn cục + token cho AJAX
-- [x] Sửa IDOR đơn hàng, thêm `[Authorize]`
-- [x] Vòng đời đơn hàng: mặc định "Chờ xác nhận", lưu `SalePrice`, thông tin người nhận
-- [x] Trang lỗi 404/403/500, security headers, health check
-- [x] Migration khởi tạo + seeder idempotent → clone là chạy
-- [x] **44 test** (ma trận phân quyền, CSRF, checkout, vòng đời đơn, SEO) — coverage **60,8%** dòng (không tính mã sinh tự động)
-- [x] **GitHub Actions** (build + test + coverage + vulnerability scan + Docker build)
-- [x] **Dockerfile + docker-compose** (web + SQL Server, health check)
-- [x] `rowversion` chống oversell, admin chuyển trạng thái đơn + huỷ hoàn kho
-- [x] `decimal(18,2)` cho toàn bộ cột tiền
-- [x] Ảnh sản phẩm nén **108,8 MB → 23,1 MB** (−79%), `wwwroot` 121 MB → 35,5 MB
-- [x] SEO: title/meta động, Open Graph, `sitemap.xml`, `robots.txt`, cache tĩnh 7 ngày
-- [x] Ảnh chụp + sơ đồ kiến trúc trong `docs/`
+## Credits
 
-Tiếp theo:
-- [ ] Thanh toán sandbox, email giao dịch
-- [ ] Deploy staging + load test (k6) + Lighthouse
-- [ ] Video demo theo kịch bản trong `docs/CV_VA_DEMO.md`
-
----
-
-## Giấy phép & ghi công
-
-Giao diện tham khảo template Bootstrap (HTML Codex) và Dashmin. Ảnh sản phẩm dùng cho mục đích học tập.
+The storefront design builds on Bootstrap-based templates, including HTML Codex and Dashmin. Product images are included for educational and portfolio demonstration purposes.
