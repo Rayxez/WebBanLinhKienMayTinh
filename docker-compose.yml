@@ -1,0 +1,43 @@
+# =============================================================================
+#  Dựng toàn bộ hệ thống bằng một lệnh:  docker compose up --build
+#  Web:  http://localhost:8080   |   SQL Server: localhost:1433
+# =============================================================================
+name: htnlshop
+
+services:
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: htnlshop-db
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD:?Set MSSQL_SA_PASSWORD in .env}
+      MSSQL_PID: "Developer"
+    ports:
+      - "1433:1433"
+    volumes:
+      - mssql-data:/var/opt/mssql
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c '</dev/tcp/localhost/1433'"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: htnlshop-web
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      Database__AutoMigrate: "true"
+      ConnectionStrings__HTLNShop: "Server=db,1433;Database=HTNLShop;User Id=sa;Password=${MSSQL_SA_PASSWORD:?Set MSSQL_SA_PASSWORD in .env};TrustServerCertificate=True"
+      Seed__AdminPassword: ${Seed__AdminPassword:?Set Seed__AdminPassword in .env}
+      Seed__CustomerPassword: ${Seed__CustomerPassword:?Set Seed__CustomerPassword in .env}
+    ports:
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  mssql-data:

@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+# Không cho crawler vào khu quản trị và luồng thanh toán
+Disallow: /Admin
+Disallow: /Cart/CheckOut
+Disallow: /Order
+Disallow: /Customer/ProFile

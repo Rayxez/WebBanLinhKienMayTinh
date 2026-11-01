@@ -1,0 +1,90 @@
+@using X.PagedList
+@using X.PagedList.Mvc.Core
+@model IPagedList<HTNLShop.ViewModels.AdminUserListItemVM>
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    ViewData["Title"] = "Quản lý Người dùng";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="mb-0"><i class="fa fa-users me-2"></i>Người dùng</h3>
+        <a asp-action="AddUser" class="btn btn-primary"><i class="fa fa-plus me-1"></i>Thêm tài khoản</a>
+    </div>
+
+    @if (TempData["Success"] is string success)
+    {
+        <div class="alert alert-success alert-dismissible fade show">
+            @success
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+    @if (TempData["Error"] is string error)
+    {
+        <div class="alert alert-danger alert-dismissible fade show">
+            @error
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="bg-light rounded p-4">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Họ tên</th>
+                        <th>Email</th>
+                        <th>Điện thoại</th>
+                        <th>Địa chỉ</th>
+                        <th>Tài khoản</th>
+                        <th>Vai trò</th>
+                        <th class="text-end">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.Id</td>
+                        <td>@item.FullName</td>
+                        <td>@item.Email</td>
+                        <td>@item.PhoneNumber</td>
+                        <td>@item.Address</td>
+                        <td>@item.UserName</td>
+                        <td>
+                            @foreach (var role in item.Roles)
+                            {
+                                <span class="badge @(role == "Admin" ? "bg-danger" : "bg-secondary")">@role</span>
+                            }
+                        </td>
+                        <td class="text-end">
+                            <a asp-action="EditUser" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary">
+                                <i class="fa fa-pen"></i> Sửa
+                            </a>
+                            <form asp-action="DeleteUser" method="post" class="d-inline"
+                                  onsubmit="return confirm('Xoá tài khoản @item.UserName?');">
+                                <input type="hidden" name="id" value="@item.Id" />
+                                <button type="submit" class="btn btn-sm btn-outline-danger">
+                                    <i class="fa fa-trash"></i> Xoá
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center mt-3">
+            <small class="text-muted">Tổng @Model.TotalItemCount tài khoản</small>
+            @Html.PagedListPager(Model, page => Url.Action("Index", new { page }),
+                new PagedListRenderOptions
+                {
+                    LiElementClasses = new[] { "page-item" },
+                    PageClasses = new[] { "page-link" }
+                })
+        </div>
+    </div>
+</div>

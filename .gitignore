@@ -1,0 +1,26 @@
+# Build output
+bin/
+obj/
+.vs/
+
+# IDE / user files
+*.user
+*.suo
+*.cache
+*.DS_Store
+
+# Logs
+*.log
+
+# Bản build cục bộ (không commit)
+*.exe
+*.dll
+*.pdb
+
+# Lưu ý: KHÔNG ignore Migrations/ — migration phải được commit để người khác
+# tạo được CSDL sau khi clone.
+
+# Bí mật cục bộ
+appsettings.*.local.json
+.env*
+!.env.example

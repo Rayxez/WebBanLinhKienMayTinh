@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+
+<html lang="vi">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width" />
+    @{
+        var pageTitle = ViewData["Title"] as string;
+        var metaTitle = string.IsNullOrWhiteSpace(pageTitle)
+            ? "HTNL.Shop — Linh kiện máy tính, PC Gaming chính hãng"
+            : $"{pageTitle} | HTNL.Shop";
+        var metaDescription = ViewData["Description"] as string
+            ?? "HTNL.Shop — laptop, PC gaming, màn hình và linh kiện máy tính chính hãng, bảo hành minh bạch, giao hàng toàn quốc.";
+    }
+    <title>@metaTitle</title>
+    <meta name="description" content="@metaDescription">
+    <meta name="keywords" content="laptop, pc gaming, linh kiện máy tính, màn hình, bàn phím cơ, htnl shop">
+    <meta property="og:title" content="@metaTitle">
+    <meta property="og:description" content="@metaDescription">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="@(ViewData["OgImage"] ?? "/img/hero-img.jpg")">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Raleway:wght@600;800&display=swap" rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link href="~/lib/lightbox/css/lightbox.min.css" rel="stylesheet">
+    <link href="~/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="~/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="~/css/style.css" rel="stylesheet">
+    <style>
+        .navbar-nav .nav-link {
+            position: relative;
+            color: #45595b;
+            font-weight: 500;
+            padding: 12px 20px;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            overflow: hidden;
+            border-radius: 8px;
+        }
+
+            /* Underline effect */
+            .navbar-nav .nav-link::before {
+                content: '';
+                position: absolute;
+                bottom: 5px;
+                left: 50%;
+                width: 0;
+                height: 2px;
+                background: linear-gradient(90deg, #81c408, #5a8d06);
+                transform: translateX(-50%);
+                transition: width 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+                border-radius: 2px;
+                opacity: 0;
+            }
+
+            /* Background effect */
+            .navbar-nav .nav-link::after {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(129, 196, 8, 0.08);
+                z-index: -1;
+                transform: scaleX(0);
+                transform-origin: left;
+                transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+                border-radius: 8px;
+            }
+
+            /* Hover state */
+            .navbar-nav .nav-link:hover {
+                color: #81c408;
+                transform: translateY(-3px);
+            }
+
+                .navbar-nav .nav-link:hover::before {
+                    width: 70%;
+                    opacity: 1;
+                }
+
+                .navbar-nav .nav-link:hover::after {
+                    transform: scaleX(1);
+                }
+
+            /* Active state */
+            .navbar-nav .nav-link.active {
+                color: #81c408;
+                font-weight: 600;
+            }
+
+                .navbar-nav .nav-link.active::before {
+                    width: 70%;
+                }
+
+                .navbar-nav .nav-link.active::after {
+                    transform: scaleX(1);
+                    background: rgba(129, 196, 8, 0.12);
+                }
+
+            /* Smooth transition khi không hover */
+            .navbar-nav .nav-link:not(:hover) {
+                transition: all 0.3s ease;
+            }
+    </style>
+	@RenderSection("Styles", required: false)
+</head>
+<body>
+    <header>
+        <!-- Navbar start -->
+        <div class="container-fluid fixed-top">
+            <div class="container topbar bg-primary d-none d-lg-block">
+                <div class="d-flex justify-content-between">
+                    <div class="top-info ps-2">
+                        <small class="me-3"><i class="fas fa-map-marker-alt me-2 text-secondary"></i> <a href="#" class="text-white">218 Lĩnh Nam</a></small>
+                        <small class="me-3"><i class="fas fa-envelope me-2 text-secondary"></i><a href="#" class="text-white">HTNL.Shop@gmail.com</a></small>
+                    </div>
+                    <div class="top-link pe-2">
+                        <a href="#" class="text-white"><small class="text-white mx-2">Privacy Policy</small>/</a>
+                        <a href="#" class="text-white"><small class="text-white mx-2">Terms of Use</small>/</a>
+                        <a href="#" class="text-white"><small class="text-white ms-2">Sales and Refunds</small></a>
+                    </div>
+                </div>
+            </div>
+            <div class="container px-0">
+                <nav class="navbar navbar-light bg-white navbar-expand-xl">
+                    <a asp-controller="TrangChu" asp-action="Index" class="navbar-brand"><h1 class="text-primary display-6">HTNL.Shop</h1></a>
+                    <button class="navbar-toggler py-2 px-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+                        <span class="fa fa-bars text-primary"></span>
+                    </button>
+                    <div class="collapse navbar-collapse bg-white" id="navbarCollapse">
+                        <div class="navbar-nav mx-auto">
+
+                            <a asp-controller="TrangChu" asp-action="Index" class="nav-item nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "TrangChu" ? "active" : "")">Trang Chủ</a>
+                            <a asp-controller="SanPham" asp-action="Index" class="nav-item nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "SanPham" ? "active" : "")">Sản Phẩm</a>
+                            <a asp-controller="Cart" asp-action="Index" class="nav-item nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Cart" ? "active" : "")">Giỏ Hàng</a>
+                            <a asp-controller="LienHe" asp-action="LienHe" class="nav-item nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "LienHe" ? "active" : "")">Liên Hệ</a>
+                            @if (User.Identity?.IsAuthenticated != true)
+                            {
+                                <a asp-controller="Customer" asp-action="Register" class="nav-item nav-link">Đăng kí</a>
+                            }
+                        </div>
+                        <div class="d-flex m-3 me-0">
+                            <button class="btn-search btn border border-secondary btn-md-square rounded-circle bg-white me-4" data-bs-toggle="modal" data-bs-target="#searchModal"><i class="fas fa-search text-primary"></i></button>
+                            @* <a asp-controller="Cart" asp-action="Index" class="position-relative me-4 my-auto">
+                                <i class="fa fa-shopping-bag fa-2x"></i>
+                                <span class="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-dark px-1" style="top: -5px; left: 15px; height: 20px; min-width: 20px;">3</span>
+                            </a> *@
+                            @await Component.InvokeAsync("Cart")
+                            @if(User.Identity.IsAuthenticated)
+                            {
+                                <div class="dropdown">
+                                    <a class="my-auto dropdown-toggle text-decoration-none text-dark" href="#" role="button" id="userMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="fas fa-user fa-2x"></i>
+                                        <span class="ms-2">@User.Identity.Name</span>
+                                    </a>
+                                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenuLink">
+                                        <li><a class="dropdown-item" asp-controller="Order" asp-action="Index">Lịch sử mua hàng</a></li>
+                                        <li><a class="dropdown-item" asp-controller="Customer" asp-action="Logout">Đăng Xuất</a></li>
+                                    </ul>
+                                </div>
+                            }
+                            else{
+                            <a asp-action="Login" asp-controller="Customer" class="my-auto"> 
+                            @* <a asp-controller="Customer" asp-action="Login"
+                               asp-route-returnurl="@(Context.Request.Path + Context.Request.QueryString)">
+                                Đăng nhập
+                            </a> *@
+                           
+                                <i class="fas fa-user fa-2x"></i>
+                            </a>
+                            }
+                        </div>
+                    </div>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+        <!-- Navbar End -->
+        <!-- Modal Search Start -->
+        <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-fullscreen">
+                <div class="modal-content rounded-0">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Tìm Kiếm Sản Phẩm</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body d-flex align-items-center">
+                        <div class="input-group w-75 mx-auto d-flex">
+                            <input id="searchText" type="search" class="form-control p-3" placeholder="Tìm Kiếm Sản Phẩm" aria-describedby="search-icon-1">
+                            <span id="searchButton" class="input-group-text p-3"><i class="fa fa-search"></i></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Modal Search End -->
+    </header>
+    <div style="margin-top: 120px;"></div>
+    <div class="bg-light">
+        @RenderBody()
+    </div>
+
+	@await Html.PartialAsync("_Footer")
+	<!-- Back to Top -->
+    <a href="#" class="btn btn-primary border-3 border-primary rounded-circle back-to-top"><i class="fa fa-arrow-up"></i></a>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/easing/easing.min.js"></script>
+    <script src="~/lib/waypoints/waypoints.min.js"></script>
+    <script src="~/lib/lightbox/js/lightbox.min.js"></script>
+    <script src="~/lib/owlcarousel/owl.carousel.min.js"></script>
+
+    <!-- Template Javascript -->
+    <script src="~/js/main.js"></script>
+
+	@RenderSection("Scripts", required: false)
+    <script>
+        $(document).ready(function () {
+            $("#searchButton").click(function () {
+                var query = $("#searchText").val();
+                if (query) {
+                    var url = "@Url.Action("Search", "SanPham")" + "?query=" + encodeURIComponent(query);
+                    window.location.href = url;
+                }
+            });
+		});
+    </script>
+</body>
+</html>

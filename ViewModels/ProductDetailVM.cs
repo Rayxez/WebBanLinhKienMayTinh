@@ -1,0 +1,16 @@
+namespace HTNLShop.ViewModels
+{
+    public class ProductDetailVM
+    {
+        public int ProductId { get; set; }
+        public string ProductName { get; set; } = null!;
+        public string ImageUrl { get; set; } = null!;
+        public decimal Price { get; set; }
+        public string ProductDetail { get; set; } = null!;
+        public int CategoryId { get; set; }
+        public string CategoryName { get; set; } = null!;
+        public int StockQuantity { get; set; }
+        public List<ProductVM> SameCategoryProduct { get; set; }
+        public List<ReviewVM> Reviews { get; set; } 
+    }
+}

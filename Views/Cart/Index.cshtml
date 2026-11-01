@@ -1,0 +1,424 @@
+@model IEnumerable<HTNLShop.ViewModels.CartItems>
+@{
+    ViewData["Title"] = "Giỏ hàng";
+    Layout = "_LayoutMain";
+}
+    <div id="spinner" class="show w-100 vh-100 bg-white position-fixed translate-middle top-50 start-50  d-flex align-items-center justify-content-center">
+        <div class="spinner-grow text-primary" role="status"></div>
+    </div>
+    <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-fullscreen">
+            <div class="modal-content rounded-0">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Search by keyword</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body d-flex align-items-center">
+                    <div class="input-group w-75 mx-auto d-flex">
+                        <input type="search" class="form-control p-3" placeholder="keywords" aria-describedby="search-icon-1">
+                        <span id="search-icon-1" class="input-group-text p-3"><i class="fa fa-search"></i></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid page-header py-5">
+    <h1 class="text-center text-white display-6" style="font-family:'roboto' ,'sans-serif'">Giỏ Hàng</h1>
+        <ol class="breadcrumb justify-content-center mb-0">
+            <li class="breadcrumb-item"><a href="#">Trang Chủ</a></li>
+            <li class="breadcrumb-item active text-white">Giỏ Hàng</li>
+        </ol>
+    </div>
+    <div class="container-fluid py-5">
+        <div class="container py-5">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Sản Phẩm</th>
+                            <th scope="col">Tên Sản Phẩm</th>
+                            <th scope="col">Giá Tiền</th>
+                            <th scope="col">Số Lượng</th>
+                            <th scope="col">Tổng Tiền</th>
+                            <th scope="col">Thao Tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <th scope="row">
+                                <div class="d-flex align-items-center">
+                                        <img src="@item.Image" class="img-fluid me-5 rounded-circle" style="width: 80px; height: 80px;" alt="@item.ProductName">
+                                </div>
+                            </th>
+                            <td>
+                                <p class="mb-0 mt-4">
+                                    <a asp-action="Detail" asp-controller="SanPham" asp-route-id="@item.ProductId">
+                                    @item.ProductName
+                                    </a>
+                                </p>
+                            </td>
+                            <td>
+                                <p class="mb-0 mt-4">@string.Format("{0:N0}",item.Price) đ</p>
+                            </td>
+                            
+                            
+                            <td>
+                                <div class="input-group quantity mt-4" style="width: 100px;">
+                                    <button class="btn btn-sm btn-minus rounded-circle bg-light border decrease-btn" data-id="@item.ProductId">
+                                        <i class="fa fa-minus"></i>
+                                    </button>
+
+                                    <input type="text" id="qty-@item.ProductId" class="form-control form-control-sm text-center border-0" value="@item.Quantity" readonly>
+
+                                    <button class="btn btn-sm btn-plus rounded-circle bg-light border increase-btn" data-id="@item.ProductId">
+                                        <i class="fa fa-plus"></i>
+                                    </button>
+                                </div>
+                            </td>
+
+                            
+                            <td>
+
+                                <p class="mb-0 mt-4 cart-total-@item.ProductId">@string.Format("{0:N0}",item.Pay) đ</p>
+
+                            </td>
+                           
+                          
+                                <td>
+                          
+                                <a href="#" class="btn btn-md rounded-circle bg-light border mt-4 remove-btn" data-id="@item.ProductId">
+                                    <i class="fa fa-times text-danger"></i>
+                                </a>
+                                </td>
+                            <td class="d-flex align-items-center gap-2 mt-4">
+               
+                                <a asp-action="BuyNow" asp-controller="Cart" asp-route-productId="@item.ProductId"
+                                   asp-route-quantity="@item.Quantity";
+                                    class="btn btn-sm btn-primary rounded-pill px-3 text-white">
+                                    Mua ngay
+                                </a>
+                            </td>
+
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+       
+            <div class="row g-4 justify-content-end">
+                <div class="col-8"></div>
+                <div class="col-sm-8 col-md-7 col-lg-6 col-xl-4">
+                    <div class="bg-light rounded">
+                        <div class="p-4">
+                            <h1 class="display-6 mb-4" style="font-family:'roboto' ,'sans-serif'">Giỏ hàng</h1>
+                            <div class="d-flex justify-content-between mb-4">
+                                <h5 class="mb-0 me-4">Tổng Tiền:</h5>
+                            <p class="mb-0 cart-Subtotal">@string.Format("{0:N0}",Model.Sum(pr => pr.Pay)) đ</p>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <h5 class="mb-0 me-4">Phí giao hàng</h5>
+                                <div class="">
+                                    <p class="mb-0">Miễn phí vận chuyển</p>
+                                </div>
+                            </div>
+                            @* <p class="mb-0 text-end">Shipping to Ukraine.</p> *@
+                        </div>
+                        <div class="py-4 mb-4 border-top border-bottom d-flex justify-content-between">
+                        <h5 class="mb-0 ps-4 me-4 cart-Subbtotal">Thanh toán</h5>
+                        <p class="mb-0 pe-4">@string.Format("{0:N0}", @Model.Sum(pr => pr.Pay)) đ</p>
+                        </div>
+                    <a asp-controller="Cart" asp-action="CheckOut" class="btn border-secondary rounded-pill px-4 py-3 text-primary text-uppercase mb-4 ms-4" type="button">Thanh Toán</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <a href="#" class="btn btn-primary border-3 border-primary rounded-circle back-to-top"><i class="fa fa-arrow-up"></i></a>
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    @Html.AntiForgeryToken()
+    <script>
+        // Toàn bộ POST đều được kiểm tra CSRF, nên AJAX phải gửi kèm token.
+        $.ajaxSetup({
+            headers: { "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val() }
+        });
+                $(function () {
+            function parseNumber(txt) {
+                if (txt === null || txt === undefined) return 0;
+                var cleaned = String(txt).replace(/[^0-9\.\,]/g, '');
+                if (cleaned.indexOf(',') > -1 && cleaned.indexOf('.') > -1) {
+                    cleaned = cleaned.replace(/,/g, '');
+                } else if (cleaned.indexOf(',') > -1 && cleaned.indexOf('.') === -1) {
+                    cleaned = cleaned.replace(/,/g, '.');
+                }
+                var n = parseFloat(cleaned);
+                return isNaN(n) ? 0 : n;
+            }
+
+            function updateCartTotalUI(total) {
+                var formatted = (total || 0).toLocaleString();
+                $(".cart-Subtotal").text(formatted + " đ");
+                $("p.mb-0.pe-4").text(formatted + " đ");
+            }
+
+            function setIncreaseButtonState(id, qty, maxStock) {
+                var btn = $(".increase-btn[data-id='" + id + "']");
+                if (!btn.length) return;
+                if (maxStock && qty >= maxStock) {
+                    btn.prop("disabled", true).addClass("disabled");
+                } else {
+                    btn.prop("disabled", false).removeClass("disabled");
+                }
+            }
+
+         
+            function updateCartIconFromServer() {
+                $.ajax({
+                    url: '@Url.Action("GetCartCount", "Cart")',
+                    type: 'GET',
+                    success: function (count) {
+                        var badge = $('.fa-shopping-bag').next('span');
+                        if (count > 0) {
+                            if (badge.length === 0) {
+                                $('.fa-shopping-bag').after(
+                                    '<span class="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-dark px-1" style="top: -5px; left: 15px; height: 20px; min-width: 20px;">' +
+                                    count +
+                                    '</span>'
+                                );
+                            } else {
+                                badge.text(count);
+                            }
+                        } else {
+                            badge.remove();
+                            // ❌ BỎ RELOAD Ở ĐÂY - GÂY LOOP VÔ HẠN
+                        }
+                    },
+                    error: function() {
+                        console.log('Không thể cập nhật số lượng giỏ hàng');
+                    }
+                });
+            }
+
+            // ✅ THÊM BIẾN ĐỂ KIỂM TRA XEM CÓ ĐANG XÓA SẢN PHẨM KHÔNG
+            var isRemoving = false;
+
+            // Increase quantity
+            $(document).on("click", ".increase-btn", function (e) {
+                e.preventDefault();
+                var btn = $(this);
+                if (btn.prop("disabled")) return;
+                const id = btn.data("id");
+
+                $.post("/Cart/IncreaseQuantity", { id: id }, function (res) {
+                    if (res.success) {
+                        $("#qty-" + id).val(res.quantity);
+                        $(".cart-total-" + id).text(Number(res.lineTotal || 0).toLocaleString() + " đ");
+                        updateCartTotalUI(res.total);
+                        setIncreaseButtonState(id, res.quantity, res.maxStock);
+                        updateCartIconFromServer();
+                    } else {
+                        if (res.maxStock) {
+                            setIncreaseButtonState(id, res.quantity || 0, res.maxStock);
+                        }
+                        alert(res.message || "Không thể tăng thêm.");
+                    }
+                }).fail(function() {
+                    alert("Lỗi khi tăng số lượng. Vui lòng thử lại.");
+                });
+            });
+
+            // Decrease quantity
+            $(document).on("click", ".decrease-btn", function (e) {
+                e.preventDefault();
+                const id = $(this).data("id");
+                const row = $(this).closest("tr");
+
+                $.post("/Cart/DecreaseQuantity", { id: id }, function (res) {
+                    if (res.success) {
+                        if (res.quantity > 0) {
+                            $("#qty-" + id).val(res.quantity);
+                            $(".cart-total-" + id).text(Number(res.lineTotal || 0).toLocaleString() + " đ");
+                            updateCartTotalUI(res.total);
+                            setIncreaseButtonState(id, res.quantity, res.maxStock);
+                            updateCartIconFromServer();
+                        } else {
+                            // ✅ ĐÁNH DẤU ĐANG XÓA
+                            isRemoving = true;
+
+                            // Nếu quantity = 0, xóa dòng
+                            row.fadeOut(300, function () {
+                                $(this).remove();
+                                updateCartTotalUI(res.total);
+                                updateCartIconFromServer();
+
+                                // ✅ CHỈ RELOAD NẾU GIỎ HÀNG TRỐNG SAU KHI XÓA
+                                if ($('tbody tr').length === 0) {
+                                    setTimeout(function() {
+                                        location.reload();
+                                    }, 500);
+                                } else {
+                                    isRemoving = false;
+                                }
+                            });
+                        }
+                    } else {
+                        alert(res.message || "Cập nhật thất bại.");
+                    }
+                }).fail(function() {
+                    alert("Lỗi khi giảm số lượng. Vui lòng thử lại.");
+                });
+            });
+
+            // Remove item
+            $(document).on("click", ".remove-btn", function (e) {
+                e.preventDefault();
+
+                if (!confirm('Bạn có chắc muốn xóa sản phẩm này?')) return;
+
+                const id = $(this).data("id");
+                const row = $(this).closest("tr");
+
+                // ✅ ĐÁNH DẤU ĐANG XÓA
+                isRemoving = true;
+
+                $.post("/Cart/RemoveCart", { productId: id }, function (res) {
+                    if (res.success) {
+                        row.fadeOut(300, function () {
+                            $(this).remove();
+                            updateCartTotalUI(res.total);
+                            updateCartIconFromServer();
+
+                            // ✅ CHỈ RELOAD NẾU GIỎ HÀNG TRỐNG SAU KHI XÓA
+                            if ($('tbody tr').length === 0) {
+                                setTimeout(function() {
+                                    location.reload();
+                                }, 500);
+                            } else {
+                                isRemoving = false;
+                            }
+                        });
+                    } else {
+                        isRemoving = false;
+                        alert(res.message || "Xóa sản phẩm thất bại!");
+                    }
+                }).fail(function() {
+                    isRemoving = false;
+                    alert("Lỗi khi xóa sản phẩm. Vui lòng thử lại.");
+                });
+            });
+
+            // ✅ CẬP NHẬT ICON KHI LOAD TRANG - NHƯNG KHÔNG RELOAD
+            updateCartIconFromServer();
+        });
+    </script>
+}
+
+@* @section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(function () {
+            function parseNumber(txt) {
+                if (txt === null || txt === undefined) return 0;
+                var cleaned = String(txt).replace(/[^0-9\.\,]/g, '');
+                if (cleaned.indexOf(',') > -1 && cleaned.indexOf('.') > -1) {
+                    cleaned = cleaned.replace(/,/g, '');
+                } else if (cleaned.indexOf(',') > -1 && cleaned.indexOf('.') === -1) {
+                    cleaned = cleaned.replace(/,/g, '.');
+                }
+                var n = parseFloat(cleaned);
+                return isNaN(n) ? 0 : n;
+            }
+
+            function updateCartTotalUI(total) {
+                var formatted = (total || 0).toLocaleString();
+                $(".cart-Subtotal").text(formatted);
+                $("p.mb-0.pe-4").text(formatted);
+            }
+
+            function setIncreaseButtonState(id, qty, maxStock) {
+                var btn = $(".increase-btn[data-id='" + id + "']");
+                if (!btn.length) return;
+                if (maxStock && qty >= maxStock) {
+                    btn.prop("disabled", true).addClass("disabled");
+                } else {
+                    btn.prop("disabled", false).removeClass("disabled");
+                }
+            }
+
+            // Increase quantity
+            $(document).on("click", ".increase-btn", function (e) {
+                e.preventDefault();
+                var btn = $(this);
+                if (btn.prop("disabled")) return;
+                const id = btn.data("id");
+
+                $.post("/Cart/IncreaseQuantity", { id: id }, function (res) {
+                    if (res.success) {
+                        $("#qty-" + id).val(res.quantity);
+                        $(".cart-total-" + id).text(Number(res.lineTotal || 0).toLocaleString());
+                        updateCartTotalUI(res.total);
+                        setIncreaseButtonState(id, res.quantity, res.maxStock);
+                    } else {
+                        if (res.maxStock) {
+                            setIncreaseButtonState(id, res.quantity || 0, res.maxStock);
+                        }
+                        alert(res.message || "Không thể tăng thêm.");
+                    }
+                }).fail(function() {
+                    alert("Lỗi khi tăng số lượng. Vui lòng thử lại.");
+                });
+            });
+
+            // Decrease quantity
+            $(document).on("click", ".decrease-btn", function (e) {
+                e.preventDefault();
+                const id = $(this).data("id");
+                const row = $(this).closest("tr");
+
+                $.post("/Cart/DecreaseQuantity", { id: id }, function (res) {
+                    if (res.success) {
+                        if (res.quantity > 0) {
+                            $("#qty-" + id).val(res.quantity);
+                            $(".cart-total-" + id).text(Number(res.lineTotal || 0).toLocaleString());
+                            updateCartTotalUI(res.total);
+                            setIncreaseButtonState(id, res.quantity, res.maxStock);
+                        } else {
+                            row.fadeOut(300, function () {
+                                $(this).remove();
+                                updateCartTotalUI(res.total);
+                            });
+                        }
+                    } else {
+                        alert(res.message || "Cập nhật thất bại.");
+                    }
+                }).fail(function() {
+                    alert("Lỗi khi giảm số lượng. Vui lòng thử lại.");
+                });
+            });
+
+
+            $(document).on("click", ".remove-btn", function (e) {
+                e.preventDefault();
+                const id = $(this).data("id");
+                const row = $(this).closest("tr");
+
+                $.post("/Cart/RemoveCart", { productId: id }, function (res) {
+                    if (res.success) {
+                        row.fadeOut(300, function () {
+                            $(this).remove();
+                            updateCartTotalUI(res.total);
+                        });
+                    } else {
+                        alert(res.message || "Xóa sản phẩm thất bại!");
+                    }
+                }).fail(function() {
+                    alert("Lỗi khi xóa sản phẩm. Vui lòng thử lại.");
+                });
+            });
+
+        });
+    </script>
+} *@
+}

@@ -1,0 +1,43 @@
+ID;Phase;Priority;Area;Title;Detail;Estimate_h;Acceptance;Labels
+SEC-01;GĐ0;P0;Auth;Sửa lỗi đăng ký thành Admin;RegisterVM bỏ trường RoleId; controller gán RoleId = 2 (Customer); seed giữ Admin = 1; thêm test không thể tự nâng quyền;0.5;User đăng ký mới có role Customer; test kiểm tra role sau đăng ký;security;auth;critical
+SEC-02;GĐ0;P0;Auth;Bảo vệ toàn bộ area Admin;Thêm base controller [Authorize(Roles = Admin)] hoặc AuthorizeFilter cho area; áp cho DashBoard, QuanLySanPham, QuanLyNguoiDung, QuanLyDonHang;1;Ẩn danh 302 về login; Customer 403; Admin 200;security;authorization;critical
+SEC-03;GĐ0;P0;Auth;Hash mật khẩu;Dùng PasswordHasher hoặc chuyển Identity; đổi seed admin/admin; cột Password dài >= 100;2;DB không còn mật khẩu đọc được; login cũ vẫn hoạt động;security;critical
+SEC-04;GĐ0;P0;Security;CSRF toàn cục;Bật AutoValidateAntiforgeryToken; kiểm tra mọi form có token;1;POST thiếu token trả 400; có test;security;csrf
+SEC-05;GĐ0;P0;Order;Sửa IDOR và thiếu authorize;[Authorize] cho OrderController; bỏ hard-code userId = 1 trong FilterOrders; dùng NameIdentifier an toàn;1;Không còn userId cố định; ẩn danh 302; mỗi user chỉ thấy đơn mình;security;idor
+SEC-06;GĐ0;P1;Order;Vòng đời trạng thái đơn;Enum 6 trạng thái; mặc định Chờ xác nhận; dashboard tính doanh thu theo trạng thái hoàn tất;2;Đơn mới không còn Đã giao hàng; báo cáo khớp dữ liệu;order;business-logic
+SEC-07;GĐ0;P1;Order;Gán SalePrice khi tạo OrderItem;Gán SalePrice = giá tại thời điểm mua; hiển thị SalePrice thay vì Product.Price;1;Hoá đơn cũ không đổi khi sửa giá sản phẩm;order;data-integrity
+SEC-08;GĐ0;P1;Checkout;Lưu thông tin người nhận;Lưu FullName/Phone/ShippingAddress/Notes; sửa logic đảo ngược GiongKhachHang;2;Nhập người nhận khác cho ra hoá đơn đúng; có test;checkout
+SEC-09;GĐ0;P0;DevEx;Chạy được sau clone;Commit migrations; README 3 lệnh; script seed; user-secrets cho connection string; kiểm tra trên máy sạch;3;git clone rồi dotnet ef database update và dotnet run là chạy;devops;onboarding;critical
+SEC-10;GĐ0;P1;ErrorHandling;Trang lỗi 404/500 thật;UseStatusCodePagesWithReExecute; tắt stack trace ở Production; trang lỗi thân thiện;1;URL sai trả 404 đẹp; lỗi DB không lộ SQL;ux;security
+SEC-11;GĐ0;P2;Assets;Dọn template và nén ảnh;Xoá wwwroot/Admin/*.html; nén ảnh <= 200KB; sửa Detail dùng Model.ImageUrl;3;Dung lượng web <= 20MB; ảnh chi tiết đúng sản phẩm;performance;cleanup
+SEC-12;GĐ0;P1;Testing;6 test đầu tiên;xUnit: đăng ký, login, phân quyền admin, tổng tiền checkout, trừ kho, CSRF;3;dotnet test xanh với 6 test;testing
+ARC-01;GĐ1;P1;Architecture;Tách 4 lớp;Domain/Application/Infrastructure/Web + tests; giữ nguyên hành vi;6;Solution build sạch; phụ thuộc một chiều;architecture
+ARC-02;GĐ1;P1;Auth;Chuyển sang ASP.NET Identity;AspNetUsers + Role; giữ claim tương thích; seed admin qua seeder;8;Login/logout/role hoạt động; migration dữ liệu user cũ;auth
+ARC-03;GĐ1;P1;Architecture;Đưa logic vào use case;PlaceOrder, AddToCart, GetDashboard; controller chỉ điều phối;8;Controller < 150 dòng; logic có test;architecture;refactor
+ARC-04;GĐ1;P1;Data;decimal cho tiền + RowVersion;Bảng Product/Order/OrderItem dùng decimal(18,2); rowversion cho Product; index Username/Email/OrderCode;4;Không sai số; chống oversell;database
+ARC-05;GĐ1;P2;Observability;Validation + log + lỗi chuẩn;FluentValidation; exception middleware ProblemDetails; Serilog;4;Lỗi trả ProblemDetails; log có correlation id;observability
+ARC-06;GĐ1;P2;Data;Tách seed 480 sản phẩm;IEntityTypeConfiguration và seeder riêng; mã đơn ORD-YYYYMMDD-xxxx;3;Migration nhẹ; seed chạy idempotent;database
+ARC-07;GĐ1;P2;DevOps;Docker hoá;Dockerfile multi-stage; docker-compose web + SQL Server + MailHog; .env.example;3;docker compose up chạy được;devops
+ARC-08;GĐ1;P2;CI;GitHub Actions;restore, build -warnaserror, test + coverage, dotnet format, upload artifact;4;Pipeline xanh trên PR;ci
+ARC-09;GĐ1;P1;Testing;Test tích hợp phân quyền;WebApplicationFactory + SQL Server container; ma trận 12 endpoint x 3 vai trò;8;36 test; bắt được lỗi thiếu Authorize;testing;security
+COM-01;GĐ2;P1;Payment;VNPay/MoMo sandbox;Tạo payment; callback verify chữ ký; bảng PaymentTransaction unique ExternalId; idempotent;12;Thanh toán end-to-end; callback trùng không cộng tiền 2 lần;payment;critical
+COM-02;GĐ2;P1;Order;Quản trị vòng đời đơn;Đổi trạng thái có kiểm tra hợp lệ; audit; huỷ hoàn kho; khách huỷ trước Đã xác nhận;8;Mọi chuyển trạng thái hợp lệ bị chặn; có audit;order
+COM-03;GĐ2;P2;Notification;Email giao dịch;SMTP/SendGrid; template xác nhận đơn, đổi trạng thái, reset mật khẩu; retry;6;Nhận email trong MailHog khi dev;notification
+COM-04;GĐ2;P2;Checkout;Phí ship + sổ địa chỉ;Phí theo tỉnh; miễn phí theo ngưỡng; nhiều địa chỉ;2;Tổng tiền có phí ship; chọn địa chỉ khi checkout;checkout
+COM-05;GĐ2;P2;Marketing;Mã giảm giá;Coupon % hoặc số tiền; điều kiện; giới hạn lượt; hạn dùng; tính lại server-side;6;Coupon áp đúng; không tin số tiền client gửi;promotion
+COM-06;GĐ2;P2;Catalogue;Biến thể và lọc facet;Thông số CPU/RAM/VGA; lọc hãng, khoảng giá; sắp xếp; tìm kiếm có index;8;Lọc kết hợp trả đúng; p95 < 300ms;catalogue
+COM-07;GĐ2;P2;Assets;Pipeline ảnh;ImageSharp resize 3 cỡ + WebP; lưu blob ngoài wwwroot; validate 5MB;4;Ảnh tự sinh 3 kích thước; upload sai bị chặn;performance
+COM-08;GĐ2;P2;Review;Đánh giá có kiểm duyệt;Chỉ người đã mua; 1 đánh giá/đơn/sản phẩm; admin duyệt; phản hồi shop;4;Ẩn danh không gửi được; spam bị chặn;review
+COM-09;GĐ2;P2;Dashboard;Báo cáo đúng và nhanh;1 query tổng hợp thay 24 query; AOV; tỉ lệ huỷ; top ngành hàng; cache 60s;4;Dashboard < 300ms; số liệu khớp đơn;performance;reporting
+COM-10;GĐ2;P3;Order;Hoá đơn PDF;Xuất PDF + thông tin VAT;2;Tải được hoá đơn từ trang đơn;order;invoice
+OPS-01;GĐ3;P1;DevOps;Deploy staging + production;Azure App Service + Azure SQL hoặc VPS Docker + Caddy; TLS; env riêng;6;Có URL staging và production;devops;critical
+OPS-02;GĐ3;P2;Observability;Health check + cảnh báo;/health kiểm tra DB và storage; Serilog sink; cảnh báo 5xx;3;Cảnh báo khi DB down;observability
+OPS-03;GĐ3;P2;Ops;Backup và restore;Dump định kỳ; thử restore sang staging;2;Restore thành công 1 lần có biên bản;ops
+OPS-04;GĐ3;P2;Performance;Load test k6;200 VU; p95 < 500ms; error < 1%; lưu báo cáo;4;Có báo cáo before/after trong docs;performance
+OPS-05;GĐ3;P2;Security;ZAP + kiểm tra gói lỗi thời;OWASP ZAP baseline; dotnet list package --vulnerable; sửa hết High;3;Không còn High/Medium;security
+OPS-06;GĐ3;P3;Performance;Lighthouse >= 90;Ảnh LCP; font; preload; a11y alt/label/contrast;4;Lighthouse mobile >= 90;performance;a11y
+OPS-07;GĐ3;P3;SEO;SEO + analytics;Title/meta động; sitemap; robots; JSON-LD Product; GA4 events;3;Rich result hợp lệ; có sự kiện add_to_cart/purchase;seo
+OPS-08;GĐ3;P3;Legal;Trang pháp lý;Chính sách bảo mật; điều khoản; đổi trả; cookie consent;2;Có 3 trang và link ở footer;legal
+OPS-09;GĐ3;P2;Portfolio;Video demo + screenshot;Video 3-5 phút; 6 screenshot; sơ đồ kiến trúc; README có ảnh;3;Bộ tài sản đủ để đưa vào CV;portfolio
+DOC-01;GĐ0;P2;Docs;README chuẩn;Mô tả; kiến trúc; 3 lệnh chạy; tính năng; testing; security;2;Người lạ hiểu dự án trong 60 giây;docs
+DOC-02;GĐ1;P3;Docs;ADR;3-5 quyết định: Identity, 4 lớp, decimal, transaction, Docker;2;Có docs/adr/;docs

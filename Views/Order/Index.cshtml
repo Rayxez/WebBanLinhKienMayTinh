@@ -1,0 +1,277 @@
+﻿@* @model IEnumerable<HTNLShop.ViewModels.OrderVM>
+@{
+    ViewData["Title"] = "My Orders";
+    Layout = "_LayoutMain";
+}
+
+@section Styles {
+    <style>
+        * {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        .flat-card {
+            border: 3px solid #1a1a1a;
+            box-shadow: 5px 5px 0px #1a1a1a;
+        }
+
+        .flat-button {
+            border: 2.5px solid #1a1a1a;
+            box-shadow: 3px 3px 0px #1a1a1a;
+            transition: all 0.1s;
+        }
+
+            .flat-button:hover {
+                transform: translate(2px, 2px);
+                box-shadow: 1px 1px 0px #1a1a1a;
+            }
+
+            .flat-button:active {
+                transform: translate(3px, 3px);
+                box-shadow: 0px 0px 0px #1a1a1a;
+            }
+
+        .flat-tab {
+            border: 2.5px solid #1a1a1a;
+        }
+
+        .flat-badge {
+            border: 2px solid #1a1a1a;
+        }
+
+        .flat-image {
+            border: 3px solid #1a1a1a;
+        }
+    </style>
+}
+
+<div class="container py-5">
+    <div class="card flat-card mb-4">
+        <div class="card-body">
+            <div class="d-flex flex-wrap gap-3">
+                <button class="btn btn-primary flat-tab">Tất cả</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="card flat-card">
+        <div class="card-body">
+            <h2 class="mb-3">Danh sách đơn hàng</h2>
+            <p class="text-muted"><span id="order-count">@Model.Count()</span> đơn hàng</p>
+
+            <div id="orders-container">
+                @if (Model.Any())
+                {
+                    @foreach (var order in Model)
+                    {
+                        var statusClass = order.Status.ToLower() == "delivered" ? "success" :
+                        order.Status.ToLower() == "pending" ? "warning" :
+                        "secondary";
+
+                        <div class="card flat-card mb-3">
+                            <div class="card-body">
+                       
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <div class="d-flex align-items-center">
+                                        <span class="fs-2 me-3">📦</span>
+                                        <div>
+                                            <h5 class="mb-0">Order #@order.OrderCode</h5>
+                                            <small class="text-muted">📅 @order.Date</small>
+                                        </div>
+                                    </div>
+                                    <span class="badge bg-@statusClass">@order.Status</span>
+                                </div>
+
+                    
+                                <div class="row mb-3 pb-3 border-bottom">
+                                    <div class="col-lg-8 d-flex">
+                                        <img src="@order.Image"
+                                             class="flat-image me-3"
+                                             style="width: 100px; height: 100px; object-fit: cover;"
+                                             alt="@order.ProductName"
+                                             onerror="this.src='/images/default-product.png'" />
+                                        <div>
+                                            <h6>@order.ProductName</h6>
+                                            @if (order.Items.Count > 1)
+                                            {
+                                                <small class="text-muted">+@(order.Items.Count - 1) sản phẩm khác</small>
+                                            }
+                                            <div class="mt-2">
+                                                <strong class="text-primary">@order.Price.ToString("N0") VNĐ</strong>
+                                                <span class="text-muted ms-2">x @order.Quantity</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 text-end">
+                                        <small class="text-muted">Tổng thanh toán:</small>
+                                        <h3 class="mb-0">@order.Total.ToString("N0") VNĐ</h3>
+                                    </div>
+                                </div>
+
+                                <!-- Actions -->
+                                <div class="text-end">
+                                    <a href="@Url.Action("OrderDetail", "Order", new { id = order.OrderId })"
+                                       class="btn btn-primary flat-button">
+                                        👁️ Xem chi tiết
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="text-center py-5">
+                        <h3>Chưa có đơn hàng nào</h3>
+                        <p class="text-muted">Các đơn hàng của bạn sẽ hiển thị ở đây sau khi thanh toán</p>
+                        <a href="@Url.Action("Index", "SanPham")" class="btn btn-primary">
+                            Bắt đầu mua sắm
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function filterOrders(status) {
+            // Update active tab
+            document.querySelectorAll('.filter-tab').forEach(tab => {
+                if (tab.dataset.status === status) {
+                    tab.classList.remove('bg-white', 'font-semibold');
+                    tab.classList.add('bg-blue-400', 'font-bold');
+                } else {
+                    tab.classList.remove('bg-blue-400', 'font-bold');
+                    tab.classList.add('bg-white', 'font-semibold');
+                }
+            });
+
+            // Fetch filtered orders
+            fetch(`@Url.Action("FilterOrders", "Order")?status=${status}`)
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById('orders-container').innerHTML = html;
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Có lỗi xảy ra khi lọc đơn hàng');
+                });
+        }
+    </script>
+} *@
+
+@model IEnumerable<HTNLShop.ViewModels.OrderVM>
+@{
+    ViewData["Title"] = "My Orders";
+    Layout = "_LayoutMain";
+}
+
+@section Styles {
+    <style>
+        * {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        .flat-card {
+            border: 3px solid #1a1a1a;
+            box-shadow: 5px 5px 0px #1a1a1a;
+        }
+
+        .flat-button {
+            border: 2.5px solid #1a1a1a;
+            box-shadow: 3px 3px 0px #1a1a1a;
+            transition: all 0.1s;
+        }
+
+            .flat-button:hover {
+                transform: translate(2px, 2px);
+                box-shadow: 1px 1px 0px #1a1a1a;
+            }
+
+            .flat-button:active {
+                transform: translate(3px, 3px);
+                box-shadow: 0px 0px 0px #1a1a1a;
+            }
+
+        .flat-image {
+            border: 3px solid #1a1a1a;
+        }
+    </style>
+}
+
+<div class="container py-5">
+    <div class="card flat-card">
+        <div class="card-body">
+            <h2 class="mb-3">Danh sách đơn hàng</h2>
+            <p class="text-muted">@Model.Count() đơn hàng</p>
+
+            @if (Model.Any())
+            {
+                @foreach (var order in Model)
+                {
+                    <div class="card flat-card mb-3">
+                        <div class="card-body">
+                            <!-- Order Header -->
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div class="d-flex align-items-center">
+                                    <span class="fs-2 me-3">📦</span>
+                                    <div>
+                                        <h5 class="mb-0">Order #@order.OrderCode</h5>
+                                        <small class="text-muted">📅 @order.Date</small>
+                                    </div>
+                                </div>
+                                <span class="badge bg-success">✅ Đã giao hàng</span>
+                            </div>
+
+                            <!-- Product Info -->
+                            <div class="row mb-3 pb-3 border-bottom">
+                                <div class="col-lg-8 d-flex">
+                                    <img src="@order.Image"
+                                         class="flat-image me-3"
+                                         style="width: 100px; height: 100px; object-fit: cover;"
+                                         alt="@order.ProductName"
+                                         onerror="this.src='/images/default-product.png'" />
+                                    <div>
+                                        <h6>@order.ProductName</h6>
+                                        @if (order.Items.Count > 1)
+                                        {
+                                            <small class="text-muted">+@(order.Items.Count - 1) sản phẩm khác</small>
+                                        }
+                                        <div class="mt-2">
+                                            <strong class="text-primary">@order.Price.ToString("N0") VNĐ</strong>
+                                            <span class="text-muted ms-2">x @order.Quantity</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 text-end">
+                                    <small class="text-muted">Tổng thanh toán:</small>
+                                    <h3 class="mb-0">@order.Total.ToString("N0") VNĐ</h3>
+                                </div>
+                            </div>
+
+                            <!-- Actions -->
+                            <div class="text-end">
+                                <a href="@Url.Action("OrderDetail", "Order", new { id = order.OrderId })"
+                                   class="btn btn-primary flat-button">
+                                    👁️ Xem chi tiết
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="text-center py-5">
+                    <h3>Chưa có đơn hàng nào</h3>
+                    <p class="text-muted">Các đơn hàng của bạn sẽ hiển thị ở đây sau khi thanh toán</p>
+                    <a href="@Url.Action("Index", "SanPham")" class="btn btn-primary flat-button">
+                        Bắt đầu mua sắm
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+</div>

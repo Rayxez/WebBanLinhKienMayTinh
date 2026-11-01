@@ -1,0 +1,20 @@
+# Build output & IDE
+bin/
+obj/
+.vs/
+**/bin/
+**/obj/
+
+# Test & tài liệu không cần trong ảnh runtime
+tests/
+docs/
+.github/
+
+# Tệp cục bộ
+*.user
+*.log
+.env
+appsettings.*.local.json
+Dockerfile
+docker-compose.yml
+.dockerignore

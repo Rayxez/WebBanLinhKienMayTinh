@@ -1,0 +1,44 @@
+@model HTNLShop.ViewModels.LoginVM
+@{
+    ViewData["Title"] = "Đăng nhập";
+}
+
+<div class="container d-flex justify-content-center align-items-center py-5" style="min-height: 75vh;">
+    <div class="card shadow-lg border-0 rounded-4" style="width: 100%; max-width: 480px;">
+        <div class="card-header bg-primary text-center py-3 rounded-top-4">
+            <h3 class="mb-0 text-uppercase fw-bold text-white">Đăng nhập</h3>
+        </div>
+        <div class="card-body p-4">
+            <form asp-action="Login" method="post" asp-route-returnUrl="@ViewBag.ReturnUrl">
+                <div class="text-danger mb-2" asp-validation-summary="ModelOnly"></div>
+
+                <div class="mb-3">
+                    <label asp-for="Username" class="form-label fw-semibold"></label>
+                    <input asp-for="Username" class="form-control form-control-lg" autocomplete="username" />
+                    <span asp-validation-for="Username" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Password" class="form-label fw-semibold"></label>
+                    <input asp-for="Password" class="form-control form-control-lg" autocomplete="current-password" />
+                    <span asp-validation-for="Password" class="text-danger small"></span>
+                </div>
+
+                <div class="form-check mb-3">
+                    <input asp-for="RememberMe" class="form-check-input" />
+                    <label asp-for="RememberMe" class="form-check-label"></label>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-lg w-100 rounded-pill">Đăng nhập</button>
+            </form>
+        </div>
+
+        <div class="card-footer text-center bg-light py-3 rounded-bottom-4">
+            <small>Chưa có tài khoản? <a asp-action="Register" class="fw-semibold">Đăng ký ngay</a></small>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

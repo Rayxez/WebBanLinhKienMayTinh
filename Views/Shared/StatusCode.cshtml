@@ -1,0 +1,26 @@
+@{
+    var code = ViewData["StatusCode"] as int? ?? 500;
+    var title = code switch
+    {
+        400 => "Yêu cầu không hợp lệ",
+        403 => "Không có quyền truy cập",
+        404 => "Không tìm thấy trang",
+        429 => "Quá nhiều yêu cầu",
+        _ => "Đã có lỗi xảy ra"
+    };
+    var message = code switch
+    {
+        404 => "Đường dẫn bạn mở không tồn tại hoặc sản phẩm đã được gỡ.",
+        403 => "Tài khoản của bạn không được phép truy cập nội dung này.",
+        _ => "Hệ thống đang gặp sự cố. Vui lòng thử lại sau ít phút."
+    };
+    ViewData["Title"] = title;
+}
+
+<div class="container py-5 text-center">
+    <div class="display-1 fw-bold text-primary">@code</div>
+    <h2 class="mb-3">@title</h2>
+    <p class="text-muted mb-4">@message</p>
+    <a asp-controller="TrangChu" asp-action="Index" class="btn btn-primary">Về trang chủ</a>
+    <a asp-controller="SanPham" asp-action="Index" class="btn btn-outline-secondary ms-2">Xem sản phẩm</a>
+</div>
